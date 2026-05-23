@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "f33595a73982ed0762c0db4243c5768d",
+    "identityHash": "e7ef1435d61129de1a74e6a1b63127f7",
     "entities": [
       {
         "tableName": "expenses",
@@ -107,6 +107,26 @@
             ],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_expenses_expense_date` ON `${TABLE_NAME}` (`expense_date`)"
+          },
+          {
+            "name": "index_expenses_expense_date_created_at",
+            "unique": false,
+            "columnNames": [
+              "expense_date",
+              "created_at"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_expenses_expense_date_created_at` ON `${TABLE_NAME}` (`expense_date`, `created_at`)"
+          },
+          {
+            "name": "index_expenses_expense_date_category_id",
+            "unique": false,
+            "columnNames": [
+              "expense_date",
+              "category_id"
+            ],
+            "orders": [],
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_expenses_expense_date_category_id` ON `${TABLE_NAME}` (`expense_date`, `category_id`)"
           },
           {
             "name": "index_expenses_merchant",
@@ -284,13 +304,14 @@
             "createSql": "CREATE INDEX IF NOT EXISTS `index_category_keywords_category_id` ON `${TABLE_NAME}` (`category_id`)"
           },
           {
-            "name": "index_category_keywords_keyword",
+            "name": "index_category_keywords_keyword_locale",
             "unique": true,
             "columnNames": [
-              "keyword"
+              "keyword",
+              "locale"
             ],
             "orders": [],
-            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_category_keywords_keyword` ON `${TABLE_NAME}` (`keyword`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_category_keywords_keyword_locale` ON `${TABLE_NAME}` (`keyword`, `locale`)"
           }
         ],
         "foreignKeys": [
@@ -505,7 +526,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f33595a73982ed0762c0db4243c5768d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e7ef1435d61129de1a74e6a1b63127f7')"
     ]
   }
 }

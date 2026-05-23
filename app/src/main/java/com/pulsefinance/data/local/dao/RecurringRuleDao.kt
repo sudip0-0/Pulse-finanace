@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface RecurringRuleDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(rule: RecurringRuleEntity): Long
 
     @Update

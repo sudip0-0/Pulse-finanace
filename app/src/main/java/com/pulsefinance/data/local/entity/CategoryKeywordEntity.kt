@@ -18,7 +18,7 @@ import androidx.room.PrimaryKey
     ],
     indices = [
         Index(value = ["category_id"]),
-        Index(value = ["keyword"], unique = true),
+        Index(value = ["keyword", "locale"], unique = true),
     ],
 )
 data class CategoryKeywordEntity(
@@ -30,7 +30,7 @@ data class CategoryKeywordEntity(
     @ColumnInfo(name = "keyword")
     val keyword: String,
     @ColumnInfo(name = "match_type")
-    val matchType: String,
+    val matchType: KeywordMatchType,
     @ColumnInfo(name = "weight")
     val weight: Int,
     @ColumnInfo(name = "locale")

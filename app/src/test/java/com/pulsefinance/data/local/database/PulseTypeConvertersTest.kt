@@ -1,5 +1,7 @@
 package com.pulsefinance.data.local.database
 
+import com.pulsefinance.data.local.entity.KeywordMatchType
+import com.pulsefinance.data.local.entity.RecurringFrequency
 import java.time.Instant
 import java.time.LocalDate
 import java.time.YearMonth
@@ -37,5 +39,21 @@ class PulseTypeConvertersTest {
 
         assertEquals("2026-05", stored)
         assertEquals(value, converters.stringToYearMonth(stored))
+    }
+
+    @Test
+    fun keywordMatchTypeRoundTripUsesStableStorageValue() {
+        val stored = converters.keywordMatchTypeToString(KeywordMatchType.Merchant)
+
+        assertEquals("merchant", stored)
+        assertEquals(KeywordMatchType.Merchant, converters.stringToKeywordMatchType(stored))
+    }
+
+    @Test
+    fun recurringFrequencyRoundTripUsesStableStorageValue() {
+        val stored = converters.recurringFrequencyToString(RecurringFrequency.Monthly)
+
+        assertEquals("monthly", stored)
+        assertEquals(RecurringFrequency.Monthly, converters.stringToRecurringFrequency(stored))
     }
 }

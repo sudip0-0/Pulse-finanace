@@ -39,7 +39,7 @@ data class RecurringRuleEntity(
     @ColumnInfo(name = "category_id")
     val categoryId: Long,
     @ColumnInfo(name = "frequency")
-    val frequency: String,
+    val frequency: RecurringFrequency,
     @ColumnInfo(name = "interval")
     val interval: Int,
     @ColumnInfo(name = "start_date")

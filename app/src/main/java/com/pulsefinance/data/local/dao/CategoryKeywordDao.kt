@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryKeywordDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(keyword: CategoryKeywordEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertAll(keywords: List<CategoryKeywordEntity>)
 
     @Update
@@ -31,7 +31,7 @@ interface CategoryKeywordDao {
     @Query(
         """
         SELECT * FROM category_keywords
-        WHERE :normalizedText LIKE '%' || keyword || '%'
+        WHERE LOWER(:normalizedText) LIKE '%' || LOWER(keyword) || '%'
         ORDER BY weight DESC, keyword ASC
         """,
     )

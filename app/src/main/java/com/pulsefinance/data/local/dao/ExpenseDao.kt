@@ -12,10 +12,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ExpenseDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insert(expense: ExpenseEntity): Long
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertAll(expenses: List<ExpenseEntity>)
 
     @Update

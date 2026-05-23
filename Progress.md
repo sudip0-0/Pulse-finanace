@@ -35,6 +35,10 @@ The project now has a buildable Android app foundation and Room local persistenc
 - Added migration holder for future Room schema versions
 - Added converter unit tests and instrumented database/DAO tests
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebugAndroidTest` succeeds
+- Hardened DAO insert conflict policies to avoid accidental replace/delete behavior
+- Added composite indexes for date-sorted dashboard queries and category aggregation
+- Added enum-backed storage for keyword match types and recurring frequencies
+- Made keyword matching case-insensitive and locale-aware at the unique index level
 
 ## In Progress
 

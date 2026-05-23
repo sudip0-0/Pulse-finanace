@@ -139,6 +139,7 @@ Potential resolution:
 Current state:
 
 - Schema version `1` is exported.
+- Phase 2 schema hardening was folded into version `1` before persisted user data exists.
 - No historical migrations exist yet because this is the first Room schema.
 - Future schema changes must add explicit migrations before release builds depend on local user data.
 

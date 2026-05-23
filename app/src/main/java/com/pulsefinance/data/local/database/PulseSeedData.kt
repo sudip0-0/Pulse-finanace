@@ -1,6 +1,7 @@
 package com.pulsefinance.data.local.database
 
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.pulsefinance.data.local.entity.KeywordMatchType
 
 object PulseSeedData {
     object CategoryId {
@@ -49,47 +50,52 @@ object PulseSeedData {
 
     private fun keywordStatements(): List<String> {
         var id = 1L
-        fun keyword(categoryId: Long, value: String, matchType: String = "keyword", weight: Int = 50): KeywordSeed {
+        fun keyword(
+            categoryId: Long,
+            value: String,
+            matchType: KeywordMatchType = KeywordMatchType.Keyword,
+            weight: Int = 50,
+        ): KeywordSeed {
             return KeywordSeed(id++, categoryId, value, matchType, weight)
         }
 
         return listOf(
-            keyword(CategoryId.TRANSPORT, "pathao", "merchant", 100),
-            keyword(CategoryId.TRANSPORT, "tootle", "merchant", 100),
-            keyword(CategoryId.TRANSPORT, "indrive", "merchant", 100),
-            keyword(CategoryId.TRANSPORT, "in drive", "merchant", 95),
-            keyword(CategoryId.FOOD_DINING, "foodmandu", "merchant", 100),
-            keyword(CategoryId.FOOD_DINING, "bhojdeals", "merchant", 100),
-            keyword(CategoryId.FOOD_DINING, "bhoj deals", "merchant", 95),
+            keyword(CategoryId.TRANSPORT, "pathao", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.TRANSPORT, "tootle", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.TRANSPORT, "indrive", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.TRANSPORT, "in drive", KeywordMatchType.Merchant, 95),
+            keyword(CategoryId.FOOD_DINING, "foodmandu", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.FOOD_DINING, "bhojdeals", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.FOOD_DINING, "bhoj deals", KeywordMatchType.Merchant, 95),
             keyword(CategoryId.FOOD_DINING, "momo", weight = 70),
             keyword(CategoryId.FOOD_DINING, "khaja", weight = 70),
-            keyword(CategoryId.GROCERIES, "bhat-bhateni", "merchant", 100),
-            keyword(CategoryId.GROCERIES, "bhatbhateni", "merchant", 100),
-            keyword(CategoryId.GROCERIES, "big mart", "merchant", 100),
-            keyword(CategoryId.GROCERIES, "salesberry", "merchant", 100),
+            keyword(CategoryId.GROCERIES, "bhat-bhateni", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.GROCERIES, "bhatbhateni", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.GROCERIES, "big mart", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.GROCERIES, "salesberry", KeywordMatchType.Merchant, 100),
             keyword(CategoryId.GROCERIES, "kirana", weight = 75),
-            keyword(CategoryId.SHOPPING, "daraz", "merchant", 100),
-            keyword(CategoryId.SHOPPING, "sastodeal", "merchant", 100),
-            keyword(CategoryId.SHOPPING, "sasto deal", "merchant", 95),
-            keyword(CategoryId.WALLET_TRANSFERS, "esewa", "merchant", 100),
-            keyword(CategoryId.WALLET_TRANSFERS, "khalti", "merchant", 100),
-            keyword(CategoryId.WALLET_TRANSFERS, "ime pay", "merchant", 100),
-            keyword(CategoryId.WALLET_TRANSFERS, "connectips", "merchant", 100),
-            keyword(CategoryId.WALLET_TRANSFERS, "connect ips", "merchant", 95),
-            keyword(CategoryId.WALLET_TRANSFERS, "fonepay", "merchant", 100),
-            keyword(CategoryId.MOBILE_RECHARGE, "ntc", "merchant", 100),
-            keyword(CategoryId.MOBILE_RECHARGE, "ncell", "merchant", 100),
+            keyword(CategoryId.SHOPPING, "daraz", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.SHOPPING, "sastodeal", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.SHOPPING, "sasto deal", KeywordMatchType.Merchant, 95),
+            keyword(CategoryId.WALLET_TRANSFERS, "esewa", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.WALLET_TRANSFERS, "khalti", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.WALLET_TRANSFERS, "ime pay", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.WALLET_TRANSFERS, "connectips", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.WALLET_TRANSFERS, "connect ips", KeywordMatchType.Merchant, 95),
+            keyword(CategoryId.WALLET_TRANSFERS, "fonepay", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.MOBILE_RECHARGE, "ntc", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.MOBILE_RECHARGE, "ncell", KeywordMatchType.Merchant, 100),
             keyword(CategoryId.MOBILE_RECHARGE, "recharge", weight = 80),
             keyword(CategoryId.MOBILE_RECHARGE, "data pack", weight = 80),
-            keyword(CategoryId.UTILITIES, "nea", "merchant", 100),
+            keyword(CategoryId.UTILITIES, "nea", KeywordMatchType.Merchant, 100),
             keyword(CategoryId.UTILITIES, "electricity", weight = 85),
-            keyword(CategoryId.UTILITIES, "khanepani", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "worldlink", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "vianet", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "classic tech", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "dishhome", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "cg net", "merchant", 100),
-            keyword(CategoryId.INTERNET_TV, "subisu", "merchant", 100),
+            keyword(CategoryId.UTILITIES, "khanepani", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "worldlink", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "vianet", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "classic tech", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "dishhome", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "cg net", KeywordMatchType.Merchant, 100),
+            keyword(CategoryId.INTERNET_TV, "subisu", KeywordMatchType.Merchant, 100),
             keyword(CategoryId.RENT_HOUSING, "rent", weight = 80),
             keyword(CategoryId.RENT_HOUSING, "room rent", weight = 95),
             keyword(CategoryId.RENT_HOUSING, "flat rent", weight = 95),
@@ -100,7 +106,7 @@ object PulseSeedData {
             keyword(CategoryId.FUEL, "fuel", weight = 80),
             keyword(CategoryId.FUEL, "petrol", weight = 85),
             keyword(CategoryId.FUEL, "diesel", weight = 85),
-            keyword(CategoryId.FUEL, "nepal oil", "merchant", 100),
+            keyword(CategoryId.FUEL, "nepal oil", KeywordMatchType.Merchant, 100),
             keyword(CategoryId.HEALTH, "hospital", weight = 85),
             keyword(CategoryId.HEALTH, "clinic", weight = 85),
             keyword(CategoryId.HEALTH, "pharmacy", weight = 85),
@@ -126,7 +132,7 @@ object PulseSeedData {
         return """
             INSERT OR IGNORE INTO category_keywords
             (id, category_id, keyword, match_type, weight, locale)
-            VALUES (${seed.id}, ${seed.categoryId}, '${seed.keyword.sqlEscaped()}', '${seed.matchType}', ${seed.weight}, 'en-NP')
+            VALUES (${seed.id}, ${seed.categoryId}, '${seed.keyword.sqlEscaped()}', '${seed.matchType.storageValue}', ${seed.weight}, 'en-NP')
         """.trimIndent()
     }
 
@@ -136,7 +142,7 @@ object PulseSeedData {
         val id: Long,
         val categoryId: Long,
         val keyword: String,
-        val matchType: String,
+        val matchType: KeywordMatchType,
         val weight: Int,
     )
 }

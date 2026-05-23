@@ -27,6 +27,8 @@ import java.time.LocalDate
     indices = [
         Index(value = ["category_id"]),
         Index(value = ["expense_date"]),
+        Index(value = ["expense_date", "created_at"]),
+        Index(value = ["expense_date", "category_id"]),
         Index(value = ["merchant"]),
         Index(value = ["recurring_rule_id"]),
     ],
