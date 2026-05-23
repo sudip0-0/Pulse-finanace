@@ -75,15 +75,20 @@
 - [x] Build merchant/title input
 - [x] Build category selector
 - [x] Show auto-category suggestion
-- [x] Build date selector
+- [x] Build date selector with DatePickerDialog
 - [x] Build payment method selector
-- [x] Build recurring toggle
+- [x] Build recurring toggle with placeholder hint
 - [x] Build note field
 - [x] Save expense to database
 - [x] Validate required fields
 - [x] Return to dashboard after save
 - [x] Wire AddExpenseUseCase and CategorizeExpenseUseCase through Hilt
 - [x] Add ViewModel unit tests for save flow and categorization
+- [x] Fix multiple-dot amount input rejection
+- [x] Fix double-save guard
+- [x] Fix date picker (was read-only with no way to change)
+- [x] Fix suggestion row accessibility
+- [x] Add amount max-length cap
 
 ## Phase 7 - Transactions UI
 

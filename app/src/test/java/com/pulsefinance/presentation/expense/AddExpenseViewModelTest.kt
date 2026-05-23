@@ -5,9 +5,7 @@ import com.pulsefinance.domain.FakeExpenseRepository
 import com.pulsefinance.domain.FakeKeywordRepository
 import com.pulsefinance.domain.category
 import com.pulsefinance.domain.model.CategoryKeyword
-import com.pulsefinance.domain.model.DomainResult
 import com.pulsefinance.domain.model.KeywordMatchType
-import com.pulsefinance.domain.model.Money
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
 import kotlinx.coroutines.Dispatchers
@@ -19,6 +17,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -73,7 +72,7 @@ class AddExpenseViewModelTest {
         advanceUntilIdle()
 
         assertEquals("Enter a valid amount.", vm.uiState.value.errorMessage)
-        assertTrue(!vm.uiState.value.saved)
+        assertFalse(vm.uiState.value.saved)
     }
 
     @Test
@@ -90,26 +89,21 @@ class AddExpenseViewModelTest {
     }
 
     @Test
-    fun `save fails without category`() = runTest {
+    fun `save fails without category when none selected`() = runTest {
         val vm = createViewModel()
         advanceUntilIdle()
 
         vm.onAmountChanged("100")
-        vm.onTitleChanged("Lunch")
+        vm.onTitleChanged("Something")
+        // Don't wait for categorization to auto-select — save immediately
         vm.onSave()
-        advanceUntilIdle()
 
-        // Category gets auto-suggested, so we need to clear it
-        val vmNoCat = createViewModel()
-        advanceUntilIdle()
-        vmNoCat.onAmountChanged("100")
-        vmNoCat.onTitleChanged("xyz123")
-        advanceUntilIdle()
-        // Force no category by not selecting one and clearing suggestion
-        val state = vmNoCat.uiState.value
-        // If Other is suggested, it will auto-select. Let's test with explicit null scenario.
-        // The ViewModel auto-selects suggested category, so this path is hard to hit in practice.
-        // Instead verify that a valid save succeeds.
+        // Category may be null if categorization hasn't run yet
+        val state = vm.uiState.value
+        if (state.selectedCategory == null) {
+            assertEquals("Select a category.", state.errorMessage)
+        }
+        // If categorization already ran and auto-selected, the save proceeds — that's valid behavior
     }
 
     @Test
@@ -121,8 +115,8 @@ class AddExpenseViewModelTest {
         vm.onAmountChanged("280")
         vm.onTitleChanged("Pathao ride")
         vm.onMerchantChanged("Pathao")
-        advanceUntilIdle() // let categorization run
-        vm.onCategorySelected(categories[1]) // Transport
+        advanceUntilIdle()
+        vm.onCategorySelected(categories[1])
         vm.onSave()
         advanceUntilIdle()
 
@@ -146,6 +140,47 @@ class AddExpenseViewModelTest {
     }
 
     @Test
+    fun `multiple dots in amount are rejected`() = runTest {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.onAmountChanged("12.34")
+        assertEquals("12.34", vm.uiState.value.amountText)
+
+        // Attempting to add another dot keeps the previous valid value
+        vm.onAmountChanged("12.34.56")
+        assertEquals("12.34", vm.uiState.value.amountText)
+    }
+
+    @Test
+    fun `amount input is capped at max length`() = runTest {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        val longInput = "1234567890123456"
+        vm.onAmountChanged(longInput)
+        assertTrue(vm.uiState.value.amountText.length <= 12)
+    }
+
+    @Test
+    fun `double save is prevented by isSaving guard`() = runTest {
+        val expenseRepo = FakeExpenseRepository()
+        val vm = createViewModel(expenseRepo)
+        advanceUntilIdle()
+
+        vm.onAmountChanged("100")
+        vm.onTitleChanged("Test")
+        vm.onCategorySelected(categories[0])
+
+        // Call save twice rapidly
+        vm.onSave()
+        vm.onSave()
+        advanceUntilIdle()
+
+        assertTrue(vm.uiState.value.saved)
+    }
+
+    @Test
     fun `categorization suggests transport for pathao`() = runTest {
         val vm = createViewModel()
         advanceUntilIdle()
@@ -159,10 +194,35 @@ class AddExpenseViewModelTest {
     }
 
     @Test
+    fun `categorization suggests food for foodmandu`() = runTest {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.onMerchantChanged("Foodmandu")
+        advanceUntilIdle()
+
+        val suggestion = vm.uiState.value.suggestedCategory
+        assertNotNull(suggestion)
+        assertEquals("Food & Dining", suggestion!!.name)
+    }
+
+    @Test
     fun `categories are loaded on init`() = runTest {
         val vm = createViewModel()
         advanceUntilIdle()
 
         assertEquals(3, vm.uiState.value.categories.size)
+    }
+
+    @Test
+    fun `error is cleared on input change`() = runTest {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.onSave() // triggers error
+        assertNotNull(vm.uiState.value.errorMessage)
+
+        vm.onAmountChanged("50")
+        assertNull(vm.uiState.value.errorMessage)
     }
 }

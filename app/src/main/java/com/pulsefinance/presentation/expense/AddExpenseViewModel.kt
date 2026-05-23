@@ -48,7 +48,13 @@ class AddExpenseViewModel @Inject constructor(
 
     fun onAmountChanged(text: String) {
         val filtered = text.filter { it.isDigit() || it == '.' }
-        _uiState.value = _uiState.value.copy(amountText = filtered, errorMessage = null)
+        // Reject multiple dots and cap length to prevent overflow
+        val sanitized = if (filtered.count { it == '.' } > 1) {
+            _uiState.value.amountText // keep previous valid value
+        } else {
+            filtered.take(MAX_AMOUNT_LENGTH)
+        }
+        _uiState.value = _uiState.value.copy(amountText = sanitized, errorMessage = null)
     }
 
     fun onTitleChanged(text: String) {
@@ -90,6 +96,8 @@ class AddExpenseViewModel @Inject constructor(
 
     fun onSave() {
         val state = _uiState.value
+        if (state.isSaving) return
+
         val amountMinor = parseAmountMinor(state.amountText)
         if (amountMinor == null || amountMinor <= 0) {
             _uiState.value = state.copy(errorMessage = "Enter a valid amount.")
@@ -191,6 +199,7 @@ class AddExpenseViewModel @Inject constructor(
 
     companion object {
         private const val CATEGORIZATION_DEBOUNCE_MS = 300L
+        private const val MAX_AMOUNT_LENGTH = 12
         private val DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy")
     }
 }

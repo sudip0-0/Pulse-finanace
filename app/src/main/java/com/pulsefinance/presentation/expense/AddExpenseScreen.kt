@@ -1,7 +1,6 @@
 package com.pulsefinance.presentation.expense
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,6 +23,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -35,11 +36,16 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -139,7 +145,10 @@ fun AddExpenseScreen(
                         .clip(RoundedCornerShape(12.dp))
                         .background(PulseColors.SurfaceHigh)
                         .clickable { viewModel.onAcceptSuggestion() }
-                        .padding(PulseSpacing.sm),
+                        .padding(PulseSpacing.sm)
+                        .semantics {
+                            contentDescription = "Suggested category: ${state.suggestedCategory!!.name}. Tap to accept."
+                        },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(PulseSpacing.xs),
                 ) {
@@ -207,14 +216,43 @@ fun AddExpenseScreen(
             }
 
             // Date
-            OutlinedTextField(
-                value = state.selectedDateText,
-                onValueChange = {},
-                readOnly = true,
-                label = { Text("Date") },
-                modifier = Modifier.fillMaxWidth(),
-                colors = pulseTextFieldColors(),
-            )
+            var showDatePicker by remember { mutableStateOf(false) }
+            Box(modifier = Modifier.fillMaxWidth()) {
+                OutlinedTextField(
+                    value = state.selectedDateText,
+                    onValueChange = {},
+                    readOnly = true,
+                    label = { Text("Date") },
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = pulseTextFieldColors(),
+                )
+                // Transparent overlay to capture clicks on the read-only field
+                Box(
+                    modifier = Modifier
+                        .matchParentSize()
+                        .clickable { showDatePicker = true },
+                )
+            }
+            if (showDatePicker) {
+                val datePickerState = rememberDatePickerState()
+                DatePickerDialog(
+                    onDismissRequest = { showDatePicker = false },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            datePickerState.selectedDateMillis?.let { millis ->
+                                val epochDay = millis / 86_400_000L
+                                viewModel.onDateSelected(epochDay)
+                            }
+                            showDatePicker = false
+                        }) { Text("OK") }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { showDatePicker = false }) { Text("Cancel") }
+                    },
+                ) {
+                    DatePicker(state = datePickerState)
+                }
+            }
 
             // Note
             OutlinedTextField(
@@ -238,6 +276,13 @@ fun AddExpenseScreen(
                     checked = state.isRecurring,
                     onCheckedChange = viewModel::onRecurringToggled,
                     colors = SwitchDefaults.colors(checkedTrackColor = PulseColors.Primary),
+                )
+            }
+            if (state.isRecurring) {
+                Text(
+                    text = "Recurring schedule will be configured after save (coming in a future update).",
+                    color = PulseColors.TextMuted,
+                    style = MaterialTheme.typography.bodyMedium,
                 )
             }
 

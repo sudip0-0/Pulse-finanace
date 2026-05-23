@@ -85,6 +85,15 @@ The project now has a complete first vertical slice: users can add expenses thro
 - Added kotlinx-coroutines-test dependency for ViewModel testing
 - Added AddExpenseViewModelTest covering save validation, categorization, and success flow
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
+- Fixed multiple-dot amount input: rejects second dot, keeps previous valid value
+- Fixed double-save race: early return if `isSaving` is already true
+- Fixed date picker: added Material3 DatePickerDialog with clickable overlay on read-only field
+- Fixed recurring toggle UX: shows "coming in a future update" hint when enabled
+- Fixed suggestion row accessibility: added contentDescription for screen readers
+- Removed unused `border` import from AddExpenseScreen
+- Added amount input max-length cap (12 characters) to prevent overflow
+- Expanded ViewModel tests: multiple-dot rejection, max-length cap, double-save guard, error clearing, Foodmandu categorization
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds after fixes
 
 ## In Progress
 

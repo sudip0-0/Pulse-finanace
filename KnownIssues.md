@@ -201,6 +201,7 @@ Current state:
 
 - Domain generation checks for an existing generated expense before creating one.
 - Full atomic duplicate prevention still belongs in the Room-backed repository transaction or a persistence constraint in Phase 4.
+- The Add Expense recurring toggle is a UI placeholder only — it does not create recurring rules yet (Phase 9).
 
 ## UI Risks
 
