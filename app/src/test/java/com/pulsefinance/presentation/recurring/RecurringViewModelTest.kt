@@ -93,6 +93,24 @@ class RecurringViewModelTest {
     }
 
     @Test
+    fun resumeAdvancesNextDueDatePastToday() = runTest {
+        val pastDate = LocalDate.now().minusMonths(3)
+        val rule = recurringRule(nextDueDate = pastDate, startDate = pastDate).copy(isActive = false)
+        val recurringRepo = FakeRecurringRuleRepository(listOf(rule))
+        val categoryRepo = FakeCategoryRepository(listOf(category(9, "Internet & TV")))
+        val viewModel = RecurringViewModel(recurringRepo, categoryRepo)
+
+        advanceUntilIdle()
+        viewModel.onTogglePause(rule.id)
+        advanceUntilIdle()
+
+        val state = viewModel.uiState.value
+        assertTrue(state.rules[0].isActive)
+        // nextDueDateLabel should NOT be "Overdue" since we advanced it
+        assertFalse(state.rules[0].nextDueDateLabel == "Overdue")
+    }
+
+    @Test
     fun deleteRuleRemovesFromList() = runTest {
         val rule = recurringRule()
         val recurringRepo = FakeRecurringRuleRepository(listOf(rule))

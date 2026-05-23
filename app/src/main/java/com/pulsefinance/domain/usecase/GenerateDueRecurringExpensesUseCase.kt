@@ -9,13 +9,19 @@ import com.pulsefinance.domain.repository.RecurringRuleRepository
 import java.time.Clock
 import java.time.Instant
 import java.time.LocalDate
+import java.util.concurrent.atomic.AtomicBoolean
 
 class GenerateDueRecurringExpensesUseCase(
     private val recurringRuleRepository: RecurringRuleRepository,
     private val expenseRepository: ExpenseRepository,
     private val clock: Clock = Clock.systemDefaultZone(),
 ) {
+    private val running = AtomicBoolean(false)
+
     suspend operator fun invoke(today: LocalDate = LocalDate.now(clock)): DomainResult<List<Long>> {
+        if (!running.compareAndSet(false, true)) {
+            return DomainResult.Success(emptyList())
+        }
         return try {
             val generatedIds = mutableListOf<Long>()
             val dueRules = recurringRuleRepository.getActiveRulesDueOnOrBefore(today)
@@ -27,6 +33,8 @@ class GenerateDueRecurringExpensesUseCase(
             DomainResult.Success(generatedIds)
         } catch (error: Throwable) {
             DomainResult.Failure(DomainError.Repository("Could not generate due recurring expenses.", error))
+        } finally {
+            running.set(false)
         }
     }
 

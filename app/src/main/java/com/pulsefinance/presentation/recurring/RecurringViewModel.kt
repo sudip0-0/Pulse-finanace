@@ -67,9 +67,22 @@ class RecurringViewModel @Inject constructor(
     fun onTogglePause(ruleId: Long) {
         viewModelScope.launch {
             val rule = recurringRuleRepository.getRuleById(ruleId) ?: return@launch
-            recurringRuleRepository.updateRule(
-                rule.copy(isActive = !rule.isActive, updatedAt = Instant.now()),
-            )
+            val now = Instant.now()
+            val today = LocalDate.now()
+            if (!rule.isActive && rule.nextDueDate.isBefore(today)) {
+                // Resuming: advance nextDueDate to avoid generating back-dated expenses
+                var next = rule.nextDueDate
+                while (next.isBefore(today)) {
+                    next = rule.nextDateAfter(next)
+                }
+                recurringRuleRepository.updateRule(
+                    rule.copy(isActive = true, nextDueDate = next, updatedAt = now),
+                )
+            } else {
+                recurringRuleRepository.updateRule(
+                    rule.copy(isActive = !rule.isActive, updatedAt = now),
+                )
+            }
         }
     }
 

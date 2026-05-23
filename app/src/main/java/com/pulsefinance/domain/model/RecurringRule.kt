@@ -38,10 +38,10 @@ data class RecurringRule(
 
     private fun nextMonthlyDateAfter(date: LocalDate): LocalDate {
         val nextMonth = date.plusMonths(interval.toLong())
-        return if (startDate.isLastDayOfMonth()) {
-            nextMonth.withDayOfMonth(nextMonth.lengthOfMonth())
-        } else {
-            nextMonth
+        return when {
+            startDate.isLastDayOfMonth() -> nextMonth.withDayOfMonth(nextMonth.lengthOfMonth())
+            startDate.dayOfMonth > nextMonth.lengthOfMonth() -> nextMonth.withDayOfMonth(nextMonth.lengthOfMonth())
+            else -> nextMonth.withDayOfMonth(startDate.dayOfMonth)
         }
     }
 

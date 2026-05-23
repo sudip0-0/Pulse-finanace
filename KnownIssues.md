@@ -204,6 +204,9 @@ Current state:
 - The DashboardViewModel triggers generation on app start.
 - Unit tests cover missed dates, already-generated dates, inactive rules, and end-date boundaries.
 - Month-end behavior is handled by the domain model's `nextDateAfter()` logic (preserves last-day-of-month semantics).
+- Monthly rules anchored to day 29/30 recover after short months (e.g., Jan 30 → Feb 28 → Mar 30).
+- Concurrent generation is guarded by an AtomicBoolean to prevent race-condition duplicates.
+- Resuming a paused rule advances `nextDueDate` past today to avoid surprising back-dated expense generation.
 
 ## UI Risks
 
