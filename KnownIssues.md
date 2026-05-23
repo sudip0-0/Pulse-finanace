@@ -183,7 +183,7 @@ Potential resolution:
 
 Current state:
 
-- 147 JVM unit tests pass via `.\gradlew.bat :app:testDebugUnitTest`.
+- 149 JVM unit tests pass via `.\gradlew.bat :app:testDebugUnitTest`.
 - Instrumented tests compile via `.\gradlew.bat :app:assembleDebugAndroidTest`.
 - Execution requires a connected device or emulator.
 

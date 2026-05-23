@@ -116,7 +116,7 @@ private fun AnalyticsContent(state: AnalyticsUiState, onTabSelected: (AnalyticsT
         }
 
         // Legend
-        items(state.categoryBreakdown, key = { it.categoryId }) { item ->
+        items(state.categoryBreakdown, key = { "cat_${it.categoryId}" }) { item ->
             LegendRow(item = item)
         }
 
@@ -126,7 +126,7 @@ private fun AnalyticsContent(state: AnalyticsUiState, onTabSelected: (AnalyticsT
                 Spacer(modifier = Modifier.height(PulseSpacing.sm))
                 Text(text = "Recent transactions", style = MaterialTheme.typography.titleLarge)
             }
-            items(state.recentTransactions, key = { it.id }) { transaction ->
+            items(state.recentTransactions, key = { "txn_${it.id}" }) { transaction ->
                 RecentTransactionRow(transaction = transaction)
             }
         }

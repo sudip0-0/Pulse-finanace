@@ -4,7 +4,7 @@
 
 Status: Phase 11 testing complete
 
-The project now has 147 unit tests covering all critical finance, categorization, persistence, and UI behavior. Test coverage spans money formatting (16 tests), Nepal-specific auto-categorization (13 tests), budget calculations (8 tests), recurring schedule generation with duplicate prevention (9 tests), CSV export with Unicode (9 tests), all ViewModel layers (63 tests), and data mappers/converters (22 tests). The add-expense UI test requires an instrumented test environment (emulator/device) and is documented as not runnable in the current environment.
+The project now has 149 unit tests covering all critical finance, categorization, persistence, and UI behavior. Test coverage spans money formatting (16 tests), Nepal-specific auto-categorization (15 tests), budget calculations (8 tests), recurring schedule generation with duplicate prevention (9 tests), CSV export with Unicode (9 tests), all ViewModel layers (63 tests), and data mappers/converters (22 tests). The add-expense UI test requires an instrumented test environment (emulator/device) and is documented as not runnable in the current environment.
 
 ## Completed
 
@@ -155,6 +155,9 @@ The project now has 147 unit tests covering all critical finance, categorization
 - Expanded CategorizeExpenseUseCaseTest from 7 to 13 tests: added Nepal-specific merchants (eSewa, Khalti, Bhat-Bhateni, NTC, WorldLink, Foodmandu)
 - Total test count: 147 unit tests across 20 test suites, all passing
 - Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with full Phase 11 coverage
+- Added explicit categorization unit tests for Daraz -> Shopping and NEA -> Utilities to complete the first real data slice merchant examples
+- Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with 149 JVM unit tests
+- Verified `.\gradlew.bat :app:assembleDebugAndroidTest` succeeds for Room DAO/instrumented test compilation
 
 ## In Progress
 

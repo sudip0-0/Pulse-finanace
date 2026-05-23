@@ -206,6 +206,38 @@ class CategorizeExpenseUseCaseTest {
         assertEquals("Food & Dining", value.category.name)
     }
 
+    @Test
+    fun categorizesDarazAsShopping() = runBlocking {
+        val nepalCategories = categories + listOf(category(4, "Shopping"))
+        val useCase = CategorizeExpenseUseCase(
+            categoryRepository = FakeCategoryRepository(nepalCategories),
+            keywordRepository = FakeKeywordRepository(
+                listOf(CategoryKeyword(1, 4, "daraz", KeywordMatchType.Merchant, 100)),
+            ),
+            expenseRepository = FakeExpenseRepository(),
+        )
+
+        val result = useCase(CategorizationInput(title = "Order payment", merchant = "Daraz"))
+        val value = (result as DomainResult.Success).value
+        assertEquals("Shopping", value.category.name)
+    }
+
+    @Test
+    fun categorizesNeaAsUtilities() = runBlocking {
+        val nepalCategories = categories + listOf(category(7, "Utilities"))
+        val useCase = CategorizeExpenseUseCase(
+            categoryRepository = FakeCategoryRepository(nepalCategories),
+            keywordRepository = FakeKeywordRepository(
+                listOf(CategoryKeyword(1, 7, "nea", KeywordMatchType.Merchant, 100)),
+            ),
+            expenseRepository = FakeExpenseRepository(),
+        )
+
+        val result = useCase(CategorizationInput(title = "Electricity bill", merchant = "NEA"))
+        val value = (result as DomainResult.Success).value
+        assertEquals("Utilities", value.category.name)
+    }
+
     private fun useCase(keywords: List<CategoryKeyword>): CategorizeExpenseUseCase {
         return CategorizeExpenseUseCase(
             categoryRepository = FakeCategoryRepository(categories),

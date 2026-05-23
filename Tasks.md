@@ -146,6 +146,7 @@
 - [x] Add recurring schedule unit tests
 - [x] Add CSV escaping unit tests
 - [x] Add Room DAO tests
+- [x] Add explicit first data slice categorization tests for Daraz and NEA
 - [x] Add dashboard ViewModel tests
 - [ ] Add add-expense UI test
 

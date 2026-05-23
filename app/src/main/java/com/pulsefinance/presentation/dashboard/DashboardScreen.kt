@@ -133,7 +133,7 @@ private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) 
             item { BudgetCard(budget = state.budgetState) }
         }
         if (state.categorySpending.isNotEmpty()) {
-            items(state.categorySpending, key = { it.categoryId }) { category ->
+            items(state.categorySpending, key = { "cat_${it.categoryId}" }) { category ->
                 CategorySpendRow(
                     name = category.name,
                     amount = category.amount,
@@ -147,7 +147,7 @@ private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) 
             item {
                 Text(text = "Recent transactions", style = MaterialTheme.typography.titleLarge)
             }
-            items(state.recentTransactions, key = { it.id }) { transaction ->
+            items(state.recentTransactions, key = { "txn_${it.id}" }) { transaction ->
                 TransactionItem(transaction = transaction)
             }
         }
