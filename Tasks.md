@@ -93,10 +93,10 @@
 ## Phase 7 - Transactions UI
 
 - [x] Build transaction list
-- [x] Add search
+- [x] Add search (with debounce)
 - [x] Add category filter
 - [x] Add date range filter (via TransactionFilters support)
-- [x] Add sort controls
+- [x] Add sort controls (reactive re-sort without re-query)
 - [x] Add edit expense flow
 - [x] Add delete confirmation
 - [x] Add empty search state

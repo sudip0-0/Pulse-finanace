@@ -14,6 +14,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -40,7 +41,7 @@ class TransactionsViewModel @Inject constructor(
 
     fun onSearchChanged(query: String) {
         _uiState.value = _uiState.value.copy(searchQuery = query, errorMessage = null)
-        observeWithCurrentFilters()
+        debouncedObserve()
     }
 
     fun onCategoryFilterSelected(categoryId: Long?) {
@@ -52,6 +53,17 @@ class TransactionsViewModel @Inject constructor(
 
     fun onSortChanged(sort: TransactionSort) {
         _uiState.value = _uiState.value.copy(sortOrder = sort)
+        // Re-sort existing transactions immediately without re-querying
+        val current = _uiState.value
+        if (current.transactions.isNotEmpty()) {
+            val resorted = when (sort) {
+                TransactionSort.DateDesc -> current.transactions.sortedByDescending { it.expenseDateEpochDay }
+                TransactionSort.DateAsc -> current.transactions.sortedBy { it.expenseDateEpochDay }
+                TransactionSort.AmountDesc -> current.transactions.sortedByDescending { parseAmountForSort(it.amount) }
+                TransactionSort.AmountAsc -> current.transactions.sortedBy { parseAmountForSort(it.amount) }
+            }
+            _uiState.value = _uiState.value.copy(transactions = resorted)
+        }
     }
 
     fun onDeleteRequested(transaction: TransactionItemUiModel) {
@@ -80,6 +92,16 @@ class TransactionsViewModel @Inject constructor(
     fun onClearFilters() {
         _uiState.value = _uiState.value.copy(searchQuery = "", selectedCategoryId = null)
         observeWithCurrentFilters()
+    }
+
+    private var searchDebounceJob: Job? = null
+
+    private fun debouncedObserve() {
+        searchDebounceJob?.cancel()
+        searchDebounceJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MS)
+            observeWithCurrentFilters()
+        }
     }
 
     private fun loadCategories() {
@@ -153,7 +175,14 @@ class TransactionsViewModel @Inject constructor(
     }
 
     companion object {
+        private const val SEARCH_DEBOUNCE_MS = 250L
         private val SHORT_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d")
         private val FULL_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy")
     }
+}
+
+private fun parseAmountForSort(formattedAmount: String): Long {
+    // Extract digits from formatted amount like "-रू 1,250.00"
+    val digits = formattedAmount.filter { it.isDigit() || it == '.' }
+    return digits.replace(".", "").toLongOrNull() ?: 0L
 }

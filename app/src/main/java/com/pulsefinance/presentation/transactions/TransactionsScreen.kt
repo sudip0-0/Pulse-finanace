@@ -112,7 +112,7 @@ fun TransactionsScreen(
                 contentPadding = PaddingValues(horizontal = PulseSpacing.xl, vertical = PulseSpacing.sm),
                 horizontalArrangement = Arrangement.spacedBy(PulseSpacing.xs),
             ) {
-                items(state.categories) { category ->
+                items(state.categories, key = { it.id }) { category ->
                     val selected = state.selectedCategoryId == category.id
                     FilterChip(
                         selected = selected,
@@ -139,7 +139,6 @@ fun TransactionsScreen(
             state.isEmpty -> TransactionsEmpty(hasFilters = state.hasActiveFilters, onClearFilters = viewModel::onClearFilters)
             else -> TransactionsList(
                 transactions = state.transactions,
-                sortOrder = state.sortOrder,
                 onEdit = onEditExpense,
                 onDelete = viewModel::onDeleteRequested,
             )
@@ -202,7 +201,6 @@ private fun TransactionsEmpty(hasFilters: Boolean, onClearFilters: () -> Unit) {
 @Composable
 private fun TransactionsList(
     transactions: List<TransactionItemUiModel>,
-    sortOrder: TransactionSort,
     onEdit: (Long) -> Unit,
     onDelete: (TransactionItemUiModel) -> Unit,
 ) {
