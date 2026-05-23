@@ -227,19 +227,21 @@ Current state:
 
 ## UI Risks
 
-## Runtime UI Not Yet Verified
+## Runtime UI Needs Device Verification
 
-The Phase 1 app compiles, but it has not been launched on a device or emulator in this environment.
+The app compiles and the ViewModel/domain/database paths are covered by JVM tests and Android test APK compilation, but the interactive Compose UI has not been launched on a device or emulator in this environment.
 
 Impact:
 
-- Initial screen rendering is verified by Compose compilation only.
+- Screen rendering is verified by Compose compilation only.
+- The add-expense end-to-end UI flow still needs an instrumented run.
 - Layout issues may still appear on real screen sizes.
 
 Potential resolution:
 
 - Run the app on an emulator or device.
-- Add Compose UI tests and screenshots once the first vertical slice exists.
+- Run `.\gradlew.bat connectedDebugAndroidTest` once a device or emulator is attached.
+- Add screenshots after the first device pass.
 
 ## Dark Theme Contrast
 

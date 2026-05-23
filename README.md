@@ -73,7 +73,7 @@ Phase 1 project foundation, Phase 2 local database, and Phase 3 domain layer are
 - Use cases for expense writes, dashboard and transaction observation, budget progress, recurring generation, and CSV export
 - Unit tests for money formatting, categorization, budget progress, recurring generation, CSV escaping, and validation
 
-Repository implementations, dependency injection, and UI integration with persisted data are still planned follow-up work.
+Repository implementations, Hilt dependency injection, and UI integration with persisted Room data are implemented. Adding an expense now writes through the domain use case and repository into Room, and the dashboard observes Room-backed flows so monthly totals, category spending, and recent transactions refresh reactively.
 
 ## Nepal-Specific Categories
 

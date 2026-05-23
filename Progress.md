@@ -189,10 +189,8 @@ The project now has 149 unit tests covering all critical finance, categorization
 
 ## Next Recommended Step
 
-Implement the Recurring Expenses UI:
+Add the remaining instrumented add-expense UI test when an emulator or device is available:
 
-1. Build RecurringViewModel consuming RecurringRuleRepository
-2. Build recurring expense list with next due date display
-3. Build create/edit recurring rule flow
-4. Generate due expenses on app start
-5. Allow pausing recurring rules
+1. Open the dashboard
+2. Add a Nepal-relevant expense
+3. Verify the dashboard total and recent transaction list update from persisted Room data
