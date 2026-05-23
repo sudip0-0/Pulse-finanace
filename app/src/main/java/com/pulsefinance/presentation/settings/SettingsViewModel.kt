@@ -117,10 +117,6 @@ class SettingsViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(exportState = ExportState.Idle)
     }
 
-    fun onNotificationsToggled(enabled: Boolean) {
-        _uiState.value = _uiState.value.copy(notificationsEnabled = enabled)
-    }
-
     private fun parseAmountMinor(text: String): Long? {
         if (text.isBlank()) return null
         val parts = text.split(".")

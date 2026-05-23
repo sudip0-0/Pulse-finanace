@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
@@ -46,6 +45,8 @@ import com.pulsefinance.presentation.common.theme.PulseSpacing
 @Composable
 fun DashboardScreen(
     onAddExpense: () -> Unit,
+    onQuickAdd: (merchant: String?, category: String?) -> Unit,
+    onSearchClick: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -54,7 +55,12 @@ fun DashboardScreen(
         state.isLoading -> DashboardLoading()
         state.errorMessage != null -> DashboardError(message = state.errorMessage!!)
         state.isEmpty -> DashboardEmpty(onAddExpense = onAddExpense)
-        else -> DashboardContent(state = state, onAddExpense = onAddExpense)
+        else -> DashboardContent(
+            state = state,
+            onAddExpense = onAddExpense,
+            onQuickAdd = onQuickAdd,
+            onSearchClick = onSearchClick,
+        )
     }
 }
 
@@ -114,7 +120,12 @@ private fun DashboardEmpty(onAddExpense: () -> Unit) {
 }
 
 @Composable
-private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) {
+private fun DashboardContent(
+    state: DashboardUiState,
+    onAddExpense: () -> Unit,
+    onQuickAdd: (merchant: String?, category: String?) -> Unit,
+    onSearchClick: () -> Unit,
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -127,7 +138,7 @@ private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) 
         ),
         verticalArrangement = Arrangement.spacedBy(PulseSpacing.xl),
     ) {
-        item { DashboardHeader() }
+        item { DashboardHeader(onSearchClick = onSearchClick) }
         item { MonthlySpendCard(amount = state.monthlySpend, onAddExpense = onAddExpense) }
         if (state.budgetState != null) {
             item { BudgetCard(budget = state.budgetState) }
@@ -142,7 +153,7 @@ private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) 
                 )
             }
         }
-        item { QuickAddRow(items = state.quickAddItems) }
+        item { QuickAddRow(items = state.quickAddItems, onQuickAdd = onQuickAdd) }
         if (state.recentTransactions.isNotEmpty()) {
             item {
                 Text(text = "Recent transactions", style = MaterialTheme.typography.titleLarge)
@@ -155,7 +166,7 @@ private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) 
 }
 
 @Composable
-private fun DashboardHeader() {
+private fun DashboardHeader(onSearchClick: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -178,11 +189,8 @@ private fun DashboardHeader() {
             Text(text = "Welcome,", color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyLarge)
             Text(text = "Aayush Shrestha", style = MaterialTheme.typography.titleLarge)
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = onSearchClick) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
-        }
-        IconButton(onClick = {}) {
-            Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
         }
     }
 }
@@ -327,7 +335,10 @@ private fun TransactionItem(transaction: TransactionUiModel) {
 }
 
 @Composable
-private fun QuickAddRow(items: List<String>) {
+private fun QuickAddRow(
+    items: List<String>,
+    onQuickAdd: (merchant: String?, category: String?) -> Unit,
+) {
     Column(verticalArrangement = Arrangement.spacedBy(PulseSpacing.sm)) {
         Text(text = "Quick add", style = MaterialTheme.typography.titleLarge)
         LazyRow(
@@ -335,12 +346,27 @@ private fun QuickAddRow(items: List<String>) {
         ) {
             items(items) { label ->
                 AssistChip(
-                    onClick = {},
+                    onClick = {
+                        val prefill = quickAddPrefill(label)
+                        onQuickAdd(prefill.merchant, prefill.category)
+                    },
                     label = { Text(text = label) },
                 )
             }
         }
     }
+}
+
+private data class QuickAddPrefill(val merchant: String?, val category: String?)
+
+private fun quickAddPrefill(label: String): QuickAddPrefill = when (label) {
+    "Food" -> QuickAddPrefill(merchant = null, category = "Food & Dining")
+    "Pathao" -> QuickAddPrefill(merchant = "Pathao", category = "Transport")
+    "Daraz" -> QuickAddPrefill(merchant = "Daraz", category = "Shopping")
+    "Fuel" -> QuickAddPrefill(merchant = null, category = "Fuel")
+    "NTC/Ncell" -> QuickAddPrefill(merchant = "NTC", category = "Mobile Recharge")
+    "eSewa/Khalti" -> QuickAddPrefill(merchant = "eSewa", category = "Wallet & Transfers")
+    else -> QuickAddPrefill(merchant = null, category = "Other")
 }
 
 private fun parseColor(hex: String): Color {

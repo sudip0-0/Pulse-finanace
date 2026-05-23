@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 11 testing complete
+Status: MVP hardening in progress
 
-The project now has 149 unit tests covering all critical finance, categorization, persistence, and UI behavior. Test coverage spans money formatting (16 tests), Nepal-specific auto-categorization (15 tests), budget calculations (8 tests), recurring schedule generation with duplicate prevention (9 tests), CSV export with Unicode (9 tests), all ViewModel layers (63 tests), and data mappers/converters (22 tests). The add-expense UI test requires an instrumented test environment (emulator/device) and is documented as not runnable in the current environment.
+The project now has 156 unit tests covering all critical finance, categorization, persistence, and UI behavior. Test coverage spans money formatting, Nepal-specific auto-categorization, budget calculations, recurring schedule generation with duplicate prevention, CSV export with Unicode, ViewModel layers, category management, and data mappers/converters. A Compose add-expense UI test has been added and the Android test APK compiles; executing it still requires an emulator or device.
 
 ## Completed
 
@@ -134,9 +134,9 @@ The project now has 149 unit tests covering all critical finance, categorization
 - Rewrote SettingsScreen with dark rounded-row style matching Design.md
 - Added monthly budget editor via AlertDialog with NPR amount input and validation
 - Added currency display showing "NPR (रू)" — read-only since multi-currency is not implemented
-- Added notification toggle placeholder (disabled switch with "Coming soon" label)
+- Initially added a disabled notification settings row
 - Added recurring expenses entry point navigating to RecurringScreen
-- Added categories entry point as a placeholder row ("View default categories")
+- Initially added a categories entry point for default category viewing
 - Implemented CSV export using Android CreateDocument API (no storage permissions needed)
 - CSV export writes UTF-8 with BOM for Excel compatibility with Nepali Unicode
 - Export covers current month's expenses with all planned columns (Date, Title, Merchant, Category, Amount, Currency, Payment Method, Note, Recurring)
@@ -158,14 +158,23 @@ The project now has 149 unit tests covering all critical finance, categorization
 - Added explicit categorization unit tests for Daraz -> Shopping and NEA -> Utilities to complete the first real data slice merchant examples
 - Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with 149 JVM unit tests
 - Verified `.\gradlew.bat :app:assembleDebugAndroidTest` succeeds for Room DAO/instrumented test compilation
+- Wired dashboard Quick Add chips to Add Expense with Nepal-relevant prefilled merchant/category values
+- Wired dashboard search icon to the Transactions screen and removed the inert notification icon from the dashboard header
+- Removed the disabled notification placeholder from Settings
+- Implemented a minimal Categories screen from Settings for viewing defaults, adding custom categories, editing custom categories, and archiving custom categories
+- Added CategoriesViewModel tests for load, add, edit, duplicate rejection, default protection, and archive behavior
+- Added AddExpenseViewModel coverage for Quick Add prefill state
+- Added a Compose add-expense UI test covering dashboard -> add expense -> save -> dashboard refresh from persisted data
+- Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with 156 JVM unit tests
+- Verified `.\gradlew.bat :app:assembleDebugAndroidTest` succeeds with the new Compose UI test compiled
 
 ## In Progress
 
-- Phase 12 portfolio polish planning
+- MVP hardening and device verification
 
 ## Not Started
 
-- Add-expense UI test (requires emulator/device)
+- Running the add-expense UI test on a connected emulator/device
 
 ## Decisions Made
 
@@ -189,7 +198,7 @@ The project now has 149 unit tests covering all critical finance, categorization
 
 ## Next Recommended Step
 
-Add the remaining instrumented add-expense UI test when an emulator or device is available:
+Run the add-expense UI test when an emulator or device is available:
 
 1. Open the dashboard
 2. Add a Nepal-relevant expense

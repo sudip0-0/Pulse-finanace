@@ -345,7 +345,6 @@ Recommended rows:
 - Monthly budget
 - CSV export
 - Currency
-- Notifications
 - Recurring expenses
 - Categories
 - Help center
@@ -504,5 +503,5 @@ Post-MVP:
 - Nepali language UI
 - Bikram Sambat date display
 - Fiscal year reports
+- Optional budget notifications
 - Bank SMS parsing if permissions and privacy concerns are handled carefully
-

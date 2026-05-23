@@ -37,4 +37,10 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE name = :name LIMIT 1")
     suspend fun getCategoryByName(name: String): CategoryEntity?
+
+    @Query("SELECT COALESCE(MAX(id), 0) FROM categories")
+    suspend fun getMaxCategoryId(): Long
+
+    @Query("SELECT COALESCE(MAX(sort_order), 0) FROM categories")
+    suspend fun getMaxSortOrder(): Int
 }

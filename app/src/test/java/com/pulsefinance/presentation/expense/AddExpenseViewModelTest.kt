@@ -9,6 +9,7 @@ import com.pulsefinance.domain.model.KeywordMatchType
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
 import com.pulsefinance.domain.usecase.UpdateExpenseUseCase
+import androidx.lifecycle.SavedStateHandle
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -51,6 +52,7 @@ class AddExpenseViewModelTest {
 
     private fun createViewModel(
         expenseRepository: FakeExpenseRepository = FakeExpenseRepository(),
+        savedStateHandle: SavedStateHandle = SavedStateHandle(),
     ): AddExpenseViewModel {
         val categoryRepository = FakeCategoryRepository(categories)
         return AddExpenseViewModel(
@@ -61,7 +63,7 @@ class AddExpenseViewModelTest {
             ),
             categoryRepository = categoryRepository,
             expenseRepository = expenseRepository,
-            savedStateHandle = androidx.lifecycle.SavedStateHandle(),
+            savedStateHandle = savedStateHandle,
         )
     }
 
@@ -216,6 +218,23 @@ class AddExpenseViewModelTest {
         advanceUntilIdle()
 
         assertEquals(3, vm.uiState.value.categories.size)
+    }
+
+    @Test
+    fun `quick add prefill selects merchant and category`() = runTest {
+        val vm = createViewModel(
+            savedStateHandle = SavedStateHandle(
+                mapOf(
+                    "merchant" to "Pathao",
+                    "category" to "Transport",
+                ),
+            ),
+        )
+        advanceUntilIdle()
+
+        assertEquals("Pathao", vm.uiState.value.merchant)
+        assertEquals("Transport", vm.uiState.value.selectedCategory?.name)
+        assertEquals("Quick add", vm.uiState.value.suggestionReason)
     }
 
     @Test

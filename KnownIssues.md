@@ -125,7 +125,7 @@ Impact:
 
 Remaining:
 
-- Category management screen is a placeholder only.
+- Category management is intentionally minimal for MVP: custom categories can be added, edited, and archived, while default seeded categories are protected.
 
 ## Chart Rendering Complexity
 
@@ -174,7 +174,7 @@ Impact:
 
 - The Android test APK compiles locally.
 - DAO tests cannot be executed in this environment without an attached emulator or device.
-- The add-expense UI test (Compose test) also requires an instrumented environment.
+- The add-expense UI test (Compose test) has been added but requires an instrumented environment to execute.
 
 Potential resolution:
 
@@ -183,7 +183,7 @@ Potential resolution:
 
 Current state:
 
-- 149 JVM unit tests pass via `.\gradlew.bat :app:testDebugUnitTest`.
+- 156 JVM unit tests pass via `.\gradlew.bat :app:testDebugUnitTest`.
 - Instrumented tests compile via `.\gradlew.bat :app:assembleDebugAndroidTest`.
 - Execution requires a connected device or emulator.
 

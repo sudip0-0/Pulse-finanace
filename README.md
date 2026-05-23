@@ -75,6 +75,8 @@ Phase 1 project foundation, Phase 2 local database, and Phase 3 domain layer are
 
 Repository implementations, Hilt dependency injection, and UI integration with persisted Room data are implemented. Adding an expense now writes through the domain use case and repository into Room, and the dashboard observes Room-backed flows so monthly totals, category spending, and recent transactions refresh reactively.
 
+Dashboard Quick Add shortcuts open Add Expense with Nepal-relevant merchant/category prefill. Settings includes minimal category management for viewing default categories, adding custom categories, editing custom categories, and archiving custom categories. A Compose add-expense UI test covers the primary dashboard-to-save-to-dashboard-refresh flow; it compiles with the Android test APK and requires an emulator/device to execute.
+
 ## Nepal-Specific Categories
 
 Default categories should include:

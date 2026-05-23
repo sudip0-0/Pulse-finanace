@@ -41,6 +41,8 @@ class AddExpenseViewModel @Inject constructor(
 
     private var categorizationJob: Job? = null
     private var editingExpenseId: Long? = null
+    private val prefillMerchant = savedStateHandle.get<String>("merchant").orEmpty()
+    private val prefillCategory = savedStateHandle.get<String>("category").orEmpty()
 
     init {
         loadCategories()
@@ -53,7 +55,19 @@ class AddExpenseViewModel @Inject constructor(
     private fun loadCategories() {
         viewModelScope.launch {
             val categories = categoryRepository.observeCategories().first()
-            _uiState.value = _uiState.value.copy(categories = categories)
+            val selectedCategory = prefillCategory
+                .takeIf { it.isNotBlank() }
+                ?.let { categoryName -> categories.firstOrNull { it.name == categoryName } }
+            _uiState.value = _uiState.value.copy(
+                merchant = prefillMerchant,
+                categories = categories,
+                selectedCategory = selectedCategory,
+                suggestedCategory = selectedCategory,
+                suggestionReason = selectedCategory?.let { "Quick add" },
+            )
+            if (prefillMerchant.isNotBlank() && selectedCategory == null) {
+                triggerCategorization()
+            }
         }
     }
 

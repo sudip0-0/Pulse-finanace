@@ -16,6 +16,7 @@ import com.pulsefinance.presentation.dashboard.DashboardScreen
 import com.pulsefinance.presentation.expense.AddExpenseScreen
 import com.pulsefinance.presentation.recurring.AddRecurringRuleScreen
 import com.pulsefinance.presentation.recurring.RecurringScreen
+import com.pulsefinance.presentation.settings.CategoriesScreen
 import com.pulsefinance.presentation.settings.SettingsScreen
 import com.pulsefinance.presentation.transactions.TransactionsScreen
 
@@ -44,7 +45,13 @@ fun PulseNavGraph() {
             modifier = Modifier.padding(innerPadding),
         ) {
             composable(PulseRoute.Dashboard.path) {
-                DashboardScreen(onAddExpense = { navController.navigate(PulseRoute.AddExpense.path) })
+                DashboardScreen(
+                    onAddExpense = { navController.navigate(PulseRoute.AddExpense.path) },
+                    onQuickAdd = { merchant, category ->
+                        navController.navigate(PulseRoute.AddExpensePrefilled.withPrefill(merchant, category))
+                    },
+                    onSearchClick = { navController.navigate(PulseRoute.Transactions.path) },
+                )
             }
             composable(PulseRoute.Analytics.path) {
                 AnalyticsScreen()
@@ -57,6 +64,21 @@ fun PulseNavGraph() {
                 )
             }
             composable(PulseRoute.AddExpense.path) {
+                AddExpenseScreen(onBack = { navController.popBackStack() })
+            }
+            composable(
+                route = PulseRoute.AddExpensePrefilled.path,
+                arguments = listOf(
+                    navArgument("merchant") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                    navArgument("category") {
+                        type = NavType.StringType
+                        defaultValue = ""
+                    },
+                ),
+            ) {
                 AddExpenseScreen(onBack = { navController.popBackStack() })
             }
             composable(
@@ -83,7 +105,13 @@ fun PulseNavGraph() {
                 AddRecurringRuleScreen(onBack = { navController.popBackStack() })
             }
             composable(PulseRoute.Settings.path) {
-                SettingsScreen(onRecurringClick = { navController.navigate(PulseRoute.Recurring.path) })
+                SettingsScreen(
+                    onRecurringClick = { navController.navigate(PulseRoute.Recurring.path) },
+                    onCategoriesClick = { navController.navigate(PulseRoute.Categories.path) },
+                )
+            }
+            composable(PulseRoute.Categories.path) {
+                CategoriesScreen(onBack = { navController.popBackStack() })
             }
         }
     }

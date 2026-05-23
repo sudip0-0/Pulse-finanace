@@ -9,7 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,8 +22,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -35,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
@@ -50,6 +46,7 @@ import com.pulsefinance.presentation.common.theme.PulseSpacing
 @Composable
 fun SettingsScreen(
     onRecurringClick: () -> Unit,
+    onCategoriesClick: () -> Unit,
     viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -137,31 +134,6 @@ fun SettingsScreen(
                 value = state.currencyLabel,
             )
 
-            // Notifications
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                PulseCard(modifier = Modifier.weight(1f)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                    ) {
-                        Column {
-                            Text(text = "Notifications", style = MaterialTheme.typography.titleMedium)
-                            Text(text = "Coming soon", color = PulseColors.TextMuted)
-                        }
-                        Switch(
-                            checked = state.notificationsEnabled,
-                            onCheckedChange = viewModel::onNotificationsToggled,
-                            colors = SwitchDefaults.colors(checkedTrackColor = PulseColors.Primary),
-                            enabled = false,
-                        )
-                    }
-                }
-            }
-
             // Recurring expenses
             SettingRow(
                 title = "Recurring expenses",
@@ -172,7 +144,8 @@ fun SettingsScreen(
             // Categories
             SettingRow(
                 title = "Categories",
-                value = "View default categories",
+                value = "Manage spending categories",
+                onClick = onCategoriesClick,
             )
 
             Spacer(modifier = Modifier.height(PulseSpacing.xl))

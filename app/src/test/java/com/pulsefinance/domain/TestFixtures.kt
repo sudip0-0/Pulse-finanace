@@ -88,10 +88,32 @@ internal class FakeCategoryRepository(
     categories: List<Category>,
 ) : CategoryRepository {
     private val categoriesFlow = MutableStateFlow(categories)
+    private var nextId = (categories.maxOfOrNull { it.id } ?: 0L) + 1L
 
-    override fun observeCategories(): Flow<List<Category>> = categoriesFlow
+    override fun observeCategories(): Flow<List<Category>> = categoriesFlow.map { categories -> categories.filterNot { it.isArchived } }
     override suspend fun getCategory(categoryId: Long): Category? = categoriesFlow.value.firstOrNull { it.id == categoryId }
     override suspend fun getCategoryByName(name: String): Category? = categoriesFlow.value.firstOrNull { it.name == name }
+    override suspend fun addCustomCategory(name: String, colorHex: String): Long {
+        val id = nextId++
+        categoriesFlow.value = categoriesFlow.value + Category(
+            id = id,
+            name = name,
+            iconKey = "category",
+            colorHex = colorHex,
+            sortOrder = id.toInt(),
+            isDefault = false,
+            isArchived = false,
+        )
+        return id
+    }
+    override suspend fun updateCategory(category: Category) {
+        categoriesFlow.value = categoriesFlow.value.map { if (it.id == category.id) category else it }
+    }
+    override suspend fun archiveCustomCategory(categoryId: Long) {
+        categoriesFlow.value = categoriesFlow.value.map {
+            if (it.id == categoryId && !it.isDefault) it.copy(isArchived = true) else it
+        }
+    }
 }
 
 internal class FakeKeywordRepository(

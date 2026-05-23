@@ -61,6 +61,7 @@
 - [x] Build budget progress card
 - [x] Build top category cards
 - [x] Build quick add row
+- [x] Wire quick add shortcuts to prefilled Add Expense
 - [x] Build bottom navigation
 - [x] Connect dashboard to real ViewModel state
 - [x] Add loading and empty states
@@ -132,9 +133,10 @@
 - [x] Build settings screen
 - [x] Add monthly budget editor
 - [x] Add currency display with NPR default
-- [x] Add notification toggle placeholder
+- [x] Remove notification placeholder from MVP settings
 - [x] Add recurring expenses entry point
 - [x] Add category management entry point
+- [x] Implement minimal category management screen
 - [x] Implement CSV export
 - [x] Verify CSV handles Nepali Unicode text
 
@@ -148,7 +150,8 @@
 - [x] Add Room DAO tests
 - [x] Add explicit first data slice categorization tests for Daraz and NEA
 - [x] Add dashboard ViewModel tests
-- [ ] Add add-expense UI test
+- [x] Add add-expense UI test
+- [ ] Run add-expense UI test on emulator/device
 
 ## Phase 12 - Portfolio Polish
 

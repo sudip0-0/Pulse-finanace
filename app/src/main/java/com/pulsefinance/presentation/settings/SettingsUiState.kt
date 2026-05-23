@@ -5,7 +5,6 @@ data class SettingsUiState(
     val budgetDisplayLabel: String = "Not set",
     val budgetSaved: Boolean = false,
     val currencyLabel: String = "NPR (रू)",
-    val notificationsEnabled: Boolean = false,
     val exportState: ExportState = ExportState.Idle,
     val errorMessage: String? = null,
 )
