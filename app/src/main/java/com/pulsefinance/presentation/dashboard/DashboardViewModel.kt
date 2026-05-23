@@ -2,7 +2,6 @@ package com.pulsefinance.presentation.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.pulsefinance.domain.model.BudgetStatus
 import com.pulsefinance.domain.model.CategorySpend
 import com.pulsefinance.domain.model.DashboardSnapshot
 import com.pulsefinance.domain.model.Expense

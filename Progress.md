@@ -82,12 +82,12 @@ The project now has a buildable Android app with Room persistence, a pure Kotlin
 
 ## Not Started
 
-- Expense CRUD
-- Real dashboard state from persisted expenses
+- Expense CRUD UI (Add/Edit/Delete screens)
 - Production analytics charts
-- Recurring expenses
-- CSV export
+- Recurring expenses UI
+- CSV export UI
 - Broader domain and UI tests
+- Dashboard ViewModel unit tests
 
 ## Decisions Made
 
