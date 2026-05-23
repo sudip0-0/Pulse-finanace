@@ -104,6 +104,20 @@ Potential resolution:
 
 ## Technical Risks
 
+## Domain Repositories Are Contracts Only
+
+The Phase 3 domain layer defines repository interfaces and use cases, but the Room-backed repository implementations are still planned for Phase 4.
+
+Impact:
+
+- Domain rules are testable with fakes.
+- UI screens still do not read or write real persisted data.
+
+Potential resolution:
+
+- Implement entity-domain mappers and repository classes in the data layer.
+- Wire repositories through dependency injection before connecting ViewModels.
+
 ## Chart Rendering Complexity
 
 Custom Compose Canvas charts require careful implementation.

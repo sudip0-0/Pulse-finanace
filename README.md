@@ -54,7 +54,7 @@ The app is not a generic budgeting clone. It is localized around:
 
 ## Current Implementation Status
 
-Phase 1 project foundation and Phase 2 local database are implemented:
+Phase 1 project foundation, Phase 2 local database, and Phase 3 domain layer are implemented:
 
 - Android `:app` module
 - Kotlin and Jetpack Compose
@@ -67,8 +67,13 @@ Phase 1 project foundation and Phase 2 local database are implemented:
 - Deterministic Nepal category and keyword seed data
 - Type converters for local dates, instants, and year-month values
 - DAO coverage for CRUD, date ranges, category aggregation, recurring rules, budgets, and keyword lookup
+- Pure Kotlin domain models using Long minor units for money
+- Repository contracts for expenses, categories, category keywords, budgets, and recurring rules
+- Deterministic Nepal-focused categorization use case
+- Use cases for expense writes, dashboard and transaction observation, budget progress, recurring generation, and CSV export
+- Unit tests for money formatting, categorization, budget progress, recurring generation, CSV escaping, and validation
 
-Repository implementations, domain business logic, recurring generation, CSV export, and UI integration with persisted data are still planned follow-up work.
+Repository implementations, dependency injection, and UI integration with persisted data are still planned follow-up work.
 
 ## Nepal-Specific Categories
 

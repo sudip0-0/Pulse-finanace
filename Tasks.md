@@ -28,20 +28,20 @@
 
 ## Phase 3 - Domain Layer
 
-- [ ] Create domain money model using minor units
-- [ ] Create expense domain model
-- [ ] Create category domain model
-- [ ] Create recurring rule domain model
-- [ ] Define repository interfaces
-- [ ] Implement `CategorizeExpenseUseCase`
-- [ ] Implement `AddExpenseUseCase`
-- [ ] Implement `UpdateExpenseUseCase`
-- [ ] Implement `DeleteExpenseUseCase`
-- [ ] Implement `ObserveDashboardUseCase`
-- [ ] Implement `ObserveTransactionsUseCase`
-- [ ] Implement `CalculateBudgetProgressUseCase`
-- [ ] Implement `GenerateDueRecurringExpensesUseCase`
-- [ ] Implement `ExportTransactionsCsvUseCase`
+- [x] Create domain money model using minor units
+- [x] Create expense domain model
+- [x] Create category domain model
+- [x] Create recurring rule domain model
+- [x] Define repository interfaces
+- [x] Implement `CategorizeExpenseUseCase`
+- [x] Implement `AddExpenseUseCase`
+- [x] Implement `UpdateExpenseUseCase`
+- [x] Implement `DeleteExpenseUseCase`
+- [x] Implement `ObserveDashboardUseCase`
+- [x] Implement `ObserveTransactionsUseCase`
+- [x] Implement `CalculateBudgetProgressUseCase`
+- [x] Implement `GenerateDueRecurringExpensesUseCase`
+- [x] Implement `ExportTransactionsCsvUseCase`
 
 ## Phase 4 - Data Repositories
 
@@ -123,11 +123,11 @@
 
 ## Phase 11 - Testing
 
-- [ ] Add categorization unit tests
-- [ ] Add money formatting unit tests
-- [ ] Add budget calculation unit tests
-- [ ] Add recurring schedule unit tests
-- [ ] Add CSV escaping unit tests
+- [x] Add categorization unit tests
+- [x] Add money formatting unit tests
+- [x] Add budget calculation unit tests
+- [x] Add recurring schedule unit tests
+- [x] Add CSV escaping unit tests
 - [x] Add Room DAO tests
 - [ ] Add dashboard ViewModel tests
 - [ ] Add add-expense UI test

@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 2 local database implemented
+Status: Phase 3 domain layer implemented
 
-The project now has a buildable Android app foundation and Room local persistence for the Nepal-focused Pulse MVP. The app uses Kotlin, Jetpack Compose, Material 3, Navigation Compose, a dark Pulse theme, and a Room schema for expenses, categories, category keywords, recurring rules, and budgets.
+The project now has a buildable Android app foundation, Room local persistence, and a pure Kotlin domain layer for the Nepal-focused Pulse MVP. The domain layer defines finance models, repository contracts, deterministic categorization, budget calculations, recurring generation, transaction observation entry points, and CSV export preparation.
 
 ## Completed
 
@@ -39,10 +39,16 @@ The project now has a buildable Android app foundation and Room local persistenc
 - Added composite indexes for date-sorted dashboard queries and category aggregation
 - Added enum-backed storage for keyword match types and recurring frequencies
 - Made keyword matching case-insensitive and locale-aware at the unique index level
+- Added immutable domain models for money, expenses, categories, category keywords, budgets, and recurring rules
+- Added repository interfaces for expenses, categories, budgets, recurring rules, and category keywords
+- Implemented add, update, delete, dashboard observation, transaction observation, categorization, budget progress, recurring generation, and CSV export use cases
+- Added deterministic categorization priority: exact merchant, strong keyword, previous merchant category, weak keyword, Other
+- Added unit tests for money formatting, categorization, budget progress, recurring generation, CSV escaping, and expense validation
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
 
 ## In Progress
 
-- Phase 3 domain layer planning
+- Phase 4 data repository planning
 
 ## Not Started
 
@@ -75,10 +81,10 @@ The project now has a buildable Android app foundation and Room local persistenc
 
 ## Next Recommended Step
 
-Implement the first domain rules and repository bridge:
+Implement the data repository bridge:
 
-1. Domain money and category models
-2. Repository interfaces and data repository implementations
-3. Nepal keyword categorization use case
-4. Unit tests for categorization and money formatting
-5. Connect Add Expense and Dashboard to real data
+1. Entity-domain mappers
+2. Repository implementations backed by Room DAOs
+3. Dependency injection wiring
+4. Connect Add Expense and Dashboard to real data
+5. ViewModel tests for reactive dashboard updates
