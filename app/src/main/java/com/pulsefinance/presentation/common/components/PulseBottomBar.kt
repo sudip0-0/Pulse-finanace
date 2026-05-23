@@ -7,13 +7,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -21,7 +21,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.unit.dp
 import com.pulsefinance.presentation.common.theme.PulseColors
 import com.pulsefinance.presentation.common.theme.PulseSpacing
 import com.pulsefinance.presentation.navigation.PulseRoute
@@ -51,7 +50,7 @@ fun PulseBottomBar(
             .navigationBarsPadding()
             .padding(horizontal = PulseSpacing.xl, vertical = PulseSpacing.sm)
             .height(PulseSpacing.navHeight)
-            .clip(RoundedCornerShape(22.dp))
+            .clip(MaterialTheme.shapes.large)
             .background(PulseColors.SurfaceHigh),
         horizontalArrangement = Arrangement.SpaceEvenly,
     ) {

@@ -97,10 +97,10 @@ private fun DashboardHeader() {
             Text(text = "Welcome,", color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyLarge)
             Text(text = "Aayush Shrestha", style = MaterialTheme.typography.titleLarge)
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = {}, enabled = false) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
         }
-        IconButton(onClick = {}) {
+        IconButton(onClick = {}, enabled = false) {
             Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
         }
     }
@@ -165,7 +165,7 @@ private fun QuickAddRow() {
             horizontalArrangement = Arrangement.spacedBy(PulseSpacing.xs),
         ) {
             PulsePreviewData.quickAddMerchants.take(4).forEach { label ->
-                AssistChip(onClick = {}, label = { Text(text = label) })
+                AssistChip(onClick = {}, label = { Text(text = label) }, enabled = false)
             }
         }
     }

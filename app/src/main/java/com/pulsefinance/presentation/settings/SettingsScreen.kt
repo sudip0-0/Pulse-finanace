@@ -1,6 +1,7 @@
 package com.pulsefinance.presentation.settings
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -30,13 +31,23 @@ fun SettingsScreen(onRecurringClick: () -> Unit) {
         SettingRow("Monthly budget", "NPR 3,500.00")
         SettingRow("CSV export", "UTF-8 export placeholder")
         SettingRow("Currency", "NPR")
-        SettingRow("Recurring expenses", "WorldLink, rent, NEA")
+        SettingRow("Recurring expenses", "WorldLink, rent, NEA", onClick = onRecurringClick)
     }
 }
 
 @Composable
-private fun SettingRow(title: String, value: String) {
-    PulseCard {
+private fun SettingRow(
+    title: String,
+    value: String,
+    onClick: (() -> Unit)? = null,
+) {
+    val rowModifier = if (onClick == null) {
+        Modifier
+    } else {
+        Modifier.clickable(onClick = onClick)
+    }
+
+    PulseCard(modifier = rowModifier) {
         Text(text = title, style = MaterialTheme.typography.titleMedium)
         Text(text = value, color = PulseColors.TextSecondary)
     }

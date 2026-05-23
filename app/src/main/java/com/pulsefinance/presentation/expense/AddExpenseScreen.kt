@@ -40,10 +40,28 @@ fun AddExpenseScreen(onBack: () -> Unit) {
             },
         )
         Text(text = "NPR 0.00", style = MaterialTheme.typography.displayMedium)
-        OutlinedTextField(value = "", onValueChange = {}, label = { Text("Merchant or title") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = "Suggested: Transport", onValueChange = {}, label = { Text("Category") }, modifier = Modifier.fillMaxWidth())
-        OutlinedTextField(value = "Cash", onValueChange = {}, label = { Text("Payment method") }, modifier = Modifier.fillMaxWidth())
-        Button(onClick = {}, modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = "",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Merchant or title") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = "Transport",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Category") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        OutlinedTextField(
+            value = "Cash",
+            onValueChange = {},
+            readOnly = true,
+            label = { Text("Payment method") },
+            modifier = Modifier.fillMaxWidth(),
+        )
+        Button(onClick = {}, enabled = false, modifier = Modifier.fillMaxWidth()) {
             Text(text = "Save expense")
         }
     }

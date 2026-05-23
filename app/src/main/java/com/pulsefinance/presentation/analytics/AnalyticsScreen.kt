@@ -44,8 +44,8 @@ fun AnalyticsScreen() {
         }
         item {
             Row(horizontalArrangement = Arrangement.spacedBy(PulseSpacing.sm)) {
-                FilterChip(selected = true, onClick = {}, label = { Text("Spending") })
-                FilterChip(selected = false, onClick = {}, label = { Text("Budget") })
+                FilterChip(selected = true, onClick = {}, label = { Text("Spending") }, enabled = false)
+                FilterChip(selected = false, onClick = {}, label = { Text("Budget") }, enabled = false)
             }
         }
         item { DonutPreview() }
