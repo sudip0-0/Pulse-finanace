@@ -13,7 +13,6 @@ data class AnalyticsUiState(
 enum class AnalyticsTab { Spending, Budget }
 
 enum class AnalyticsPeriod(val label: String) {
-    ThisWeek("This week"),
     ThisMonth("This month"),
     LastMonth("Last month"),
 }

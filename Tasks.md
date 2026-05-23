@@ -116,6 +116,7 @@
 - [x] Add accessible chart summaries
 - [x] Add empty analytics state
 - [x] Wire AnalyticsViewModel with ObserveDashboardUseCase
+- [x] Add AnalyticsViewModel unit tests (aggregation, percentages, sweep angles, accessibility)
 
 ## Phase 9 - Recurring Expenses
 

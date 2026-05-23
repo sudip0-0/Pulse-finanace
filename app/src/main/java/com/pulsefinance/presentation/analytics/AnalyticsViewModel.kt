@@ -11,8 +11,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.format.DateTimeFormatter
-import java.time.temporal.WeekFields
-import java.util.Locale
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +46,6 @@ class AnalyticsViewModel @Inject constructor(
     private fun observePeriod(period: AnalyticsPeriod) {
         observeJob?.cancel()
         val month = when (period) {
-            AnalyticsPeriod.ThisWeek -> YearMonth.now()
             AnalyticsPeriod.ThisMonth -> YearMonth.now()
             AnalyticsPeriod.LastMonth -> YearMonth.now().minusMonths(1)
         }
@@ -65,7 +62,10 @@ class AnalyticsViewModel @Inject constructor(
 
     private fun DashboardSnapshot.toUiState(period: AnalyticsPeriod): AnalyticsUiState {
         val totalMinor = monthlySpend.amountMinor
-        val breakdown = categorySpending.map { it.toBreakdownItem(totalMinor) }
+        val gapDegrees = CHART_GAP_DEGREES
+        val totalGap = categorySpending.size * gapDegrees
+        val availableSweep = (360f - totalGap).coerceAtLeast(0f)
+        val breakdown = categorySpending.map { it.toBreakdownItem(totalMinor, availableSweep) }
         val accessibilitySummary = buildAccessibilitySummary(monthlySpend, breakdown)
 
         return AnalyticsUiState(
@@ -79,9 +79,9 @@ class AnalyticsViewModel @Inject constructor(
         )
     }
 
-    private fun CategorySpend.toBreakdownItem(totalMinor: Long): CategoryBreakdownItem {
+    private fun CategorySpend.toBreakdownItem(totalMinor: Long, availableSweep: Float): CategoryBreakdownItem {
         val pct = if (totalMinor > 0) (amount.amountMinor * 100 / totalMinor).toInt() else 0
-        val sweep = if (totalMinor > 0) (amount.amountMinor.toFloat() / totalMinor * 360f) else 0f
+        val sweep = if (totalMinor > 0) (amount.amountMinor.toFloat() / totalMinor * availableSweep) else 0f
         return CategoryBreakdownItem(
             categoryId = category.id,
             name = category.name,
@@ -121,6 +121,7 @@ class AnalyticsViewModel @Inject constructor(
 
     companion object {
         private const val RECENT_LIMIT = 5
+        private const val CHART_GAP_DEGREES = 4f
         private val SHORT_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d")
         private val FULL_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy")
     }

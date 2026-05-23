@@ -1,6 +1,6 @@
 package com.pulsefinance.presentation.analytics
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -31,6 +31,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -165,11 +166,11 @@ private fun DonutChart(
     totalSpend: String,
     accessibilitySummary: String,
 ) {
-    val animationProgress by animateFloatAsState(
-        targetValue = 1f,
-        animationSpec = tween(durationMillis = 600),
-        label = "donut_animation",
-    )
+    val animationProgress = remember { Animatable(0f) }
+    LaunchedEffect(breakdown) {
+        animationProgress.snapTo(0f)
+        animationProgress.animateTo(1f, animationSpec = tween(durationMillis = 600))
+    }
 
     Column(
         modifier = Modifier
@@ -192,12 +193,12 @@ private fun DonutChart(
                 var startAngle = -90f
 
                 breakdown.forEach { item ->
-                    val sweep = item.sweepAngle * animationProgress
-                    if (sweep > 0f) {
+                    val sweep = item.sweepAngle * animationProgress.value
+                    if (sweep > 0.5f) {
                         drawArc(
                             color = parseColor(item.colorHex),
                             startAngle = startAngle,
-                            sweepAngle = (sweep - gap).coerceAtLeast(0.5f),
+                            sweepAngle = sweep,
                             useCenter = false,
                             topLeft = topLeft,
                             size = arcSize,
