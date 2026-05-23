@@ -66,23 +66,35 @@ class SettingsViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val now = Instant.now()
-            val currentMonth = YearMonth.now()
-            val budget = Budget(
-                month = currentMonth,
-                amount = Money(amountMinor),
-                createdAt = now,
-                updatedAt = now,
-            )
-            budgetRepository.saveBudget(budget)
-            _uiState.value = _uiState.value.copy(
-                budgetDisplayLabel = Money(amountMinor).format(),
-                errorMessage = null,
-            )
+            try {
+                val now = Instant.now()
+                val currentMonth = YearMonth.now()
+                val budget = Budget(
+                    month = currentMonth,
+                    amount = Money(amountMinor),
+                    createdAt = now,
+                    updatedAt = now,
+                )
+                budgetRepository.saveBudget(budget)
+                _uiState.value = _uiState.value.copy(
+                    budgetDisplayLabel = Money(amountMinor).format(),
+                    budgetSaved = true,
+                    errorMessage = null,
+                )
+            } catch (error: Throwable) {
+                _uiState.value = _uiState.value.copy(
+                    errorMessage = error.message ?: "Failed to save budget.",
+                )
+            }
         }
     }
 
+    fun onBudgetDialogDismissed() {
+        _uiState.value = _uiState.value.copy(budgetSaved = false)
+    }
+
     fun onExportCsv() {
+        if (_uiState.value.exportState is ExportState.Exporting) return
         _uiState.value = _uiState.value.copy(exportState = ExportState.Exporting)
         viewModelScope.launch {
             val startOfMonth = YearMonth.now().atDay(1)

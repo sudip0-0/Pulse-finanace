@@ -56,6 +56,14 @@ fun SettingsScreen(
     val context = LocalContext.current
     var showBudgetDialog by remember { mutableStateOf(false) }
 
+    // Close budget dialog when save succeeds
+    LaunchedEffect(state.budgetSaved) {
+        if (state.budgetSaved) {
+            showBudgetDialog = false
+            viewModel.onBudgetDialogDismissed()
+        }
+    }
+
     // CSV export via document creation API (no storage permissions needed)
     val createDocumentLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.CreateDocument("text/csv"),
@@ -63,8 +71,12 @@ fun SettingsScreen(
         if (uri != null) {
             val exportState = state.exportState
             if (exportState is ExportState.Ready) {
-                writeCsvToUri(context, uri, exportState.csvContent)
-                Toast.makeText(context, "Exported successfully", Toast.LENGTH_SHORT).show()
+                val success = writeCsvToUri(context, uri, exportState.csvContent)
+                if (success) {
+                    Toast.makeText(context, "Exported successfully", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(context, "Export failed — could not write file", Toast.LENGTH_SHORT).show()
+                }
             }
         }
         viewModel.onExportComplete()
@@ -211,12 +223,7 @@ fun SettingsScreen(
                 }
             },
             confirmButton = {
-                TextButton(onClick = {
-                    viewModel.onSaveBudget()
-                    if (state.errorMessage == null) {
-                        showBudgetDialog = false
-                    }
-                }) { Text("Save") }
+                TextButton(onClick = { viewModel.onSaveBudget() }) { Text("Save") }
             },
             dismissButton = {
                 TextButton(onClick = { showBudgetDialog = false }) { Text("Cancel") }
@@ -239,10 +246,14 @@ private fun SettingRow(
     }
 }
 
-private fun writeCsvToUri(context: Context, uri: Uri, csvContent: String) {
-    context.contentResolver.openOutputStream(uri)?.use { outputStream ->
-        // Write UTF-8 BOM for Excel compatibility with Nepali Unicode
-        outputStream.write(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()))
-        outputStream.write(csvContent.toByteArray(Charsets.UTF_8))
+private fun writeCsvToUri(context: Context, uri: Uri, csvContent: String): Boolean {
+    return try {
+        context.contentResolver.openOutputStream(uri)?.use { outputStream ->
+            // Write UTF-8 BOM for Excel compatibility with Nepali Unicode
+            outputStream.write(byteArrayOf(0xEF.toByte(), 0xBB.toByte(), 0xBF.toByte()))
+            outputStream.write(csvContent.toByteArray(Charsets.UTF_8))
+        } != null
+    } catch (_: Exception) {
+        false
     }
 }

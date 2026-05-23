@@ -85,6 +85,7 @@ class SettingsViewModelTest {
         advanceUntilIdle()
 
         assertEquals("रू 5,000.00", viewModel.uiState.value.budgetDisplayLabel)
+        assertTrue(viewModel.uiState.value.budgetSaved)
         assertNull(viewModel.uiState.value.errorMessage)
     }
 

@@ -25,7 +25,7 @@ class ExportTransactionsCsvUseCase(
                     expense.isRecurringGenerated.toString(),
                 )
             }
-            DomainResult.Success((listOf(header) + rows).joinToString("\n") { row -> row.joinToString(",") { it.csvEscaped() } })
+            DomainResult.Success((listOf(header) + rows).joinToString("\r\n") { row -> row.joinToString(",") { it.csvEscaped() } })
         } catch (error: Throwable) {
             DomainResult.Failure(DomainError.Repository("Could not export transactions.", error))
         }

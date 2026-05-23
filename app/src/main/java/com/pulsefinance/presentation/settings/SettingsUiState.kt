@@ -3,6 +3,7 @@ package com.pulsefinance.presentation.settings
 data class SettingsUiState(
     val budgetAmountText: String = "",
     val budgetDisplayLabel: String = "Not set",
+    val budgetSaved: Boolean = false,
     val currencyLabel: String = "NPR (रू)",
     val notificationsEnabled: Boolean = false,
     val exportState: ExportState = ExportState.Idle,

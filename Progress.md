@@ -144,6 +144,11 @@ The project now has a complete settings screen with monthly budget editor (dialo
 - Added SettingsViewModelTest (7 tests: budget load, not set, validation, save, export ready, export complete, currency label)
 - Expanded ExportTransactionsCsvUseCaseTest to 8 tests: escaping, header, Nepali Unicode, recurring column, non-recurring, amount format, empty fields, multiple rows
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with settings and export
+- Fixed budget dialog dismiss race: uses budgetSaved flag with LaunchedEffect instead of synchronous error check
+- Fixed CSV line endings: uses CRLF (\r\n) per RFC 4180 for Excel/Windows compatibility
+- Fixed writeCsvToUri: returns boolean, shows failure toast on IOException or null stream
+- Fixed export double-tap: guards against concurrent export with early return
+- Added usesCrlfLineEndings test to verify RFC 4180 compliance
 
 ## In Progress
 

@@ -128,8 +128,22 @@ class ExportTransactionsCsvUseCaseTest {
         )
 
         val csv = (result as DomainResult.Success).value
-        val lines = csv.lines()
+        val lines = csv.lines().filter { it.isNotEmpty() }
         assertEquals(4, lines.size) // header + 3 data rows
+    }
+
+    @Test
+    fun usesCrlfLineEndings() = runBlocking {
+        val result = useCase(
+            listOf(expense(title = "Test")),
+        )
+
+        val csv = (result as DomainResult.Success).value
+        // Row separator should be CRLF
+        assertTrue(csv.contains("\r\n"))
+        // Split by CRLF should give header + 1 data row
+        val rows = csv.split("\r\n")
+        assertEquals(2, rows.size)
     }
 
     // Simple CSV parser for testing (handles quoted fields)
