@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 7 transactions UI implemented
+Status: Phase 8 analytics UI implemented
 
-The project now has a complete expense management flow: users can add, view, search, filter, sort, edit, and delete expenses. The transactions screen observes real persisted data reactively, supports search by title/merchant/note, category filter chips, sort by date or amount, inline edit navigation, and delete with confirmation dialog.
+The project now has a complete analytics experience with a Compose Canvas donut chart showing category spending breakdown, animated transitions, period picker (this week/month/last month), segmented control, category legend with amounts and percentages, recent transactions, and accessible text summaries for screen readers.
 
 ## Completed
 
@@ -106,14 +106,24 @@ The project now has a complete expense management flow: users can add, view, sea
 - Wired ObserveTransactionsUseCase, UpdateExpenseUseCase, and DeleteExpenseUseCase in UseCaseModule
 - Added TransactionsViewModelTest with 9 tests covering load, search, filter, delete, clear filters, and empty state
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
+- Implemented AnalyticsViewModel with @HiltViewModel consuming ObserveDashboardUseCase with period selection
+- Built full Analytics screen with Compose Canvas donut chart, animated sweep angles, center total spend
+- Added period picker dropdown (This week, This month, Last month)
+- Added Spending/Budget segmented control with pill-style selection
+- Built category legend with color dots, names, amounts, and percentages
+- Built recent transactions section
+- Added accessible chart summary via semantics contentDescription
+- Added empty state "Add expenses to see insights"
+- Donut chart uses rounded stroke caps and gap between segments
+- Animation uses tween(600ms) for smooth entry
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with analytics
 
 ## In Progress
 
-- Phase 8 analytics UI planning
+- Phase 9 recurring expenses UI planning
 
 ## Not Started
 
-- Production analytics charts (Compose Canvas donut/bar)
 - Recurring expenses UI
 - CSV export UI
 - Dashboard ViewModel unit tests
@@ -140,11 +150,10 @@ The project now has a complete expense management flow: users can add, view, sea
 
 ## Next Recommended Step
 
-Implement the Analytics UI:
+Implement the Recurring Expenses UI:
 
-1. Build AnalyticsViewModel consuming category spend data
-2. Implement donut chart with Compose Canvas
-3. Build category legend with amounts and percentages
-4. Add period picker (this week, this month, last month)
-5. Add spending/budget segmented control
-6. Add accessible chart summaries
+1. Build RecurringViewModel consuming RecurringRuleRepository
+2. Build recurring expense list with next due date display
+3. Build create/edit recurring rule flow
+4. Generate due expenses on app start
+5. Allow pausing recurring rules

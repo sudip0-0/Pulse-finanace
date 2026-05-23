@@ -106,15 +106,16 @@
 
 ## Phase 8 - Analytics UI
 
-- [ ] Build analytics top app bar
-- [ ] Build period picker
-- [ ] Build Spending/Budget segmented control
-- [ ] Implement donut chart with Compose Canvas
-- [ ] Implement bar chart with Compose Canvas
-- [ ] Build category legend
-- [ ] Build recent transactions section
-- [ ] Animate chart changes
-- [ ] Add accessible chart summaries
+- [x] Build analytics top app bar
+- [x] Build period picker (This week, This month, Last month)
+- [x] Build Spending/Budget segmented control
+- [x] Implement donut chart with Compose Canvas
+- [x] Build category legend with color, name, amount, and percentage
+- [x] Build recent transactions section
+- [x] Animate chart changes (tween animation on donut sweep)
+- [x] Add accessible chart summaries
+- [x] Add empty analytics state
+- [x] Wire AnalyticsViewModel with ObserveDashboardUseCase
 
 ## Phase 9 - Recurring Expenses
 
