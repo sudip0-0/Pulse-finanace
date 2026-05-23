@@ -7,6 +7,9 @@ import kotlinx.coroutines.flow.Flow
 interface RecurringRuleRepository {
     suspend fun addRule(rule: RecurringRule): Long
     suspend fun updateRule(rule: RecurringRule)
+    suspend fun deleteRule(ruleId: Long)
+    suspend fun getRuleById(ruleId: Long): RecurringRule?
+    fun observeAllRules(): Flow<List<RecurringRule>>
     fun observeActiveRules(): Flow<List<RecurringRule>>
     suspend fun getActiveRulesDueOnOrBefore(date: LocalDate): List<RecurringRule>
 }

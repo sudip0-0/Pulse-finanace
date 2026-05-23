@@ -14,6 +14,7 @@ import com.pulsefinance.presentation.analytics.AnalyticsScreen
 import com.pulsefinance.presentation.common.components.PulseBottomBar
 import com.pulsefinance.presentation.dashboard.DashboardScreen
 import com.pulsefinance.presentation.expense.AddExpenseScreen
+import com.pulsefinance.presentation.recurring.AddRecurringRuleScreen
 import com.pulsefinance.presentation.recurring.RecurringScreen
 import com.pulsefinance.presentation.settings.SettingsScreen
 import com.pulsefinance.presentation.transactions.TransactionsScreen
@@ -65,7 +66,21 @@ fun PulseNavGraph() {
                 AddExpenseScreen(onBack = { navController.popBackStack() })
             }
             composable(PulseRoute.Recurring.path) {
-                RecurringScreen()
+                RecurringScreen(
+                    onAddRule = { navController.navigate(PulseRoute.AddRecurringRule.path) },
+                    onEditRule = { ruleId ->
+                        navController.navigate(PulseRoute.EditRecurringRule.withId(ruleId))
+                    },
+                )
+            }
+            composable(PulseRoute.AddRecurringRule.path) {
+                AddRecurringRuleScreen(onBack = { navController.popBackStack() })
+            }
+            composable(
+                route = PulseRoute.EditRecurringRule.path,
+                arguments = listOf(navArgument("ruleId") { type = NavType.LongType }),
+            ) {
+                AddRecurringRuleScreen(onBack = { navController.popBackStack() })
             }
             composable(PulseRoute.Settings.path) {
                 SettingsScreen(onRecurringClick = { navController.navigate(PulseRoute.Recurring.path) })

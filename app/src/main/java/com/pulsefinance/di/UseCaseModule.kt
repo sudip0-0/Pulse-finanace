@@ -4,10 +4,12 @@ import com.pulsefinance.domain.repository.BudgetRepository
 import com.pulsefinance.domain.repository.CategoryKeywordRepository
 import com.pulsefinance.domain.repository.CategoryRepository
 import com.pulsefinance.domain.repository.ExpenseRepository
+import com.pulsefinance.domain.repository.RecurringRuleRepository
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CalculateBudgetProgressUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
 import com.pulsefinance.domain.usecase.DeleteExpenseUseCase
+import com.pulsefinance.domain.usecase.GenerateDueRecurringExpensesUseCase
 import com.pulsefinance.domain.usecase.ObserveDashboardUseCase
 import com.pulsefinance.domain.usecase.ObserveTransactionsUseCase
 import com.pulsefinance.domain.usecase.UpdateExpenseUseCase
@@ -77,6 +79,15 @@ object UseCaseModule {
     fun provideDeleteExpense(
         expenseRepository: ExpenseRepository,
     ): DeleteExpenseUseCase = DeleteExpenseUseCase(
+        expenseRepository = expenseRepository,
+    )
+
+    @Provides
+    fun provideGenerateDueRecurringExpenses(
+        recurringRuleRepository: RecurringRuleRepository,
+        expenseRepository: ExpenseRepository,
+    ): GenerateDueRecurringExpensesUseCase = GenerateDueRecurringExpensesUseCase(
+        recurringRuleRepository = recurringRuleRepository,
         expenseRepository = expenseRepository,
     )
 }

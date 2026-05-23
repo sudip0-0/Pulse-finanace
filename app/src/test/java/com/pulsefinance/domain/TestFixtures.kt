@@ -169,16 +169,33 @@ internal class FakeBudgetRepository(
 }
 
 internal class FakeRecurringRuleRepository(
-    rules: List<RecurringRule>,
+    rules: List<RecurringRule> = emptyList(),
 ) : RecurringRuleRepository {
     private val rulesFlow = MutableStateFlow(rules)
+    private var nextId = (rules.maxOfOrNull { it.id } ?: 0L) + 1L
 
-    override suspend fun addRule(rule: RecurringRule): Long = rule.id
+    override suspend fun addRule(rule: RecurringRule): Long {
+        val id = if (rule.id > 0) rule.id else nextId++
+        rulesFlow.value = rulesFlow.value + rule.copy(id = id)
+        return id
+    }
+
     override suspend fun updateRule(rule: RecurringRule) {
         rulesFlow.value = rulesFlow.value.map { if (it.id == rule.id) rule else it }
     }
 
+    override suspend fun deleteRule(ruleId: Long) {
+        rulesFlow.value = rulesFlow.value.filterNot { it.id == ruleId }
+    }
+
+    override suspend fun getRuleById(ruleId: Long): RecurringRule? {
+        return rulesFlow.value.firstOrNull { it.id == ruleId }
+    }
+
+    override fun observeAllRules(): Flow<List<RecurringRule>> = rulesFlow
+
     override fun observeActiveRules(): Flow<List<RecurringRule>> = rulesFlow.map { rules -> rules.filter { it.isActive } }
+
     override suspend fun getActiveRulesDueOnOrBefore(date: LocalDate): List<RecurringRule> {
         return rulesFlow.value.filter { it.isActive && !it.nextDueDate.isAfter(date) }
     }

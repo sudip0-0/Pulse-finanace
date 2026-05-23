@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.pulsefinance.domain.model.CategorySpend
 import com.pulsefinance.domain.model.DashboardSnapshot
 import com.pulsefinance.domain.model.Expense
+import com.pulsefinance.domain.usecase.GenerateDueRecurringExpensesUseCase
 import com.pulsefinance.domain.usecase.ObserveDashboardUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.LocalDate
@@ -22,6 +23,7 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val observeDashboard: ObserveDashboardUseCase,
+    private val generateDueRecurringExpenses: GenerateDueRecurringExpensesUseCase,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -30,7 +32,14 @@ class DashboardViewModel @Inject constructor(
     private var currentMonth: YearMonth = YearMonth.now()
 
     init {
+        generateRecurringExpenses()
         observeMonth(currentMonth)
+    }
+
+    private fun generateRecurringExpenses() {
+        viewModelScope.launch {
+            generateDueRecurringExpenses()
+        }
     }
 
     private fun observeMonth(month: YearMonth) {

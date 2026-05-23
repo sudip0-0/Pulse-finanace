@@ -26,6 +26,19 @@ class RecurringRuleRepositoryImpl(
         recurringRuleDao.update(rule.toEntity())
     }
 
+    override suspend fun deleteRule(ruleId: Long) = withContext(ioDispatcher) {
+        recurringRuleDao.deleteById(ruleId)
+    }
+
+    override suspend fun getRuleById(ruleId: Long): RecurringRule? = withContext(ioDispatcher) {
+        recurringRuleDao.getRuleById(ruleId)?.toDomain()
+    }
+
+    override fun observeAllRules(): Flow<List<RecurringRule>> =
+        recurringRuleDao.observeRules()
+            .map { entities -> entities.map { it.toDomain() } }
+            .flowOn(ioDispatcher)
+
     override fun observeActiveRules(): Flow<List<RecurringRule>> =
         recurringRuleDao.observeActiveRules()
             .map { entities -> entities.map { it.toDomain() } }

@@ -120,12 +120,12 @@
 
 ## Phase 9 - Recurring Expenses
 
-- [ ] Build recurring expense list
-- [ ] Build recurring expense create/edit flow
-- [ ] Generate due expenses on app start
-- [ ] Prevent duplicate recurring generation
-- [ ] Allow pausing recurring rules
-- [ ] Add next due date display
+- [x] Build recurring expense list
+- [x] Build recurring expense create/edit flow
+- [x] Generate due expenses on app start
+- [x] Prevent duplicate recurring generation
+- [x] Allow pausing recurring rules
+- [x] Add next due date display
 
 ## Phase 10 - Settings and Export
 

@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 8 analytics UI implemented
+Status: Phase 9 recurring expenses implemented
 
-The project now has a complete analytics experience with a Compose Canvas donut chart showing category spending breakdown, animated transitions, period picker (this week/month/last month), segmented control, category legend with amounts and percentages, recent transactions, and accessible text summaries for screen readers.
+The project now has a complete recurring expense management system. Users can create, edit, pause, resume, and delete recurring rules for predictable Nepal expenses (rent, internet, electricity, etc.). Due expenses are automatically generated on app start with duplicate prevention. The recurring list shows next due date, overdue status, and pause state. Generated expenses appear in transactions, dashboard, and analytics.
 
 ## Completed
 
@@ -117,14 +117,26 @@ The project now has a complete analytics experience with a Compose Canvas donut 
 - Donut chart uses rounded stroke caps and gap between segments
 - Animation uses tween(600ms) for smooth entry
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with analytics
+- Implemented RecurringViewModel with @HiltViewModel consuming RecurringRuleRepository and CategoryRepository
+- Built full Recurring Expenses list screen with FAB, pause/resume toggle, delete confirmation, next due date display
+- Built Add/Edit Recurring Rule screen with amount, title, merchant, category chips, frequency selector, interval, start/end date pickers
+- Added navigation routes for AddRecurringRule and EditRecurringRule with navArgument for rule ID
+- Wired GenerateDueRecurringExpensesUseCase in UseCaseModule and triggered on app start via DashboardViewModel
+- Extended RecurringRuleRepository interface with observeAllRules(), getRuleById(), and deleteRule()
+- Updated RecurringRuleRepositoryImpl with new methods
+- Duplicate prevention via existing hasGeneratedExpenseForRecurringRule() check in GenerateDueRecurringExpensesUseCase
+- Paused rules shown with reduced opacity and "Paused" label; overdue rules shown in red
+- Nepal-specific suggestions shown in create form (Rent, WorldLink, NEA, Khanepani, NTC/Ncell, School fee)
+- Added RecurringViewModelTest (6 tests: load, empty, pause, resume, delete, overdue label)
+- Added AddRecurringRuleViewModelTest (9 tests: categories, validation, save, dots, frequency, interval, edit mode)
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug` succeeds with recurring expenses
 
 ## In Progress
 
-- Phase 9 recurring expenses UI planning
+- Phase 10 settings and export planning
 
 ## Not Started
 
-- Recurring expenses UI
 - CSV export UI
 - Dashboard ViewModel unit tests
 

@@ -106,16 +106,16 @@ Potential resolution:
 
 ## Domain Repositories Are Now Wired Through Hilt
 
-The Phase 5 implementation connects repositories to the UI through Hilt DI modules and a reactive ViewModel.
+All phases through Phase 9 are connected through Hilt DI modules and reactive ViewModels.
 
 Impact:
 
-- The dashboard screen reads real persisted data.
-- Adding expenses will reactively update the dashboard.
+- The dashboard, transactions, analytics, and recurring screens all read real persisted data.
+- Recurring expense generation runs on app start via DashboardViewModel.
 
 Remaining:
 
-- Other screens (Transactions, Analytics, Settings) still need their own ViewModels wired.
+- Settings screen still needs its own ViewModel wired for budget editing and export.
 
 ## Chart Rendering Complexity
 
@@ -200,8 +200,10 @@ Potential resolution:
 Current state:
 
 - Domain generation checks for an existing generated expense before creating one.
-- Full atomic duplicate prevention still belongs in the Room-backed repository transaction or a persistence constraint in Phase 4.
-- The Add Expense recurring toggle is a UI placeholder only — it does not create recurring rules yet (Phase 9).
+- The DAO has `hasGeneratedExpenseForRule(ruleId, date)` for atomic duplicate detection.
+- The DashboardViewModel triggers generation on app start.
+- Unit tests cover missed dates, already-generated dates, inactive rules, and end-date boundaries.
+- Month-end behavior is handled by the domain model's `nextDateAfter()` logic (preserves last-day-of-month semantics).
 
 ## UI Risks
 
