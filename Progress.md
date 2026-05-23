@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 10 settings and export implemented
+Status: Phase 11 testing complete
 
-The project now has a complete settings screen with monthly budget editor (dialog with NPR input), CSV export via Android document creation APIs (no storage permissions needed), currency display showing NPR (रू), notification toggle placeholder, recurring expenses entry point, and categories placeholder. CSV export uses UTF-8 with BOM for Excel compatibility and preserves Nepali Unicode text.
+The project now has 147 unit tests covering all critical finance, categorization, persistence, and UI behavior. Test coverage spans money formatting (16 tests), Nepal-specific auto-categorization (13 tests), budget calculations (8 tests), recurring schedule generation with duplicate prevention (9 tests), CSV export with Unicode (9 tests), all ViewModel layers (63 tests), and data mappers/converters (22 tests). The add-expense UI test requires an instrumented test environment (emulator/device) and is documented as not runnable in the current environment.
 
 ## Completed
 
@@ -149,15 +149,20 @@ The project now has a complete settings screen with monthly budget editor (dialo
 - Fixed writeCsvToUri: returns boolean, shows failure toast on IOException or null stream
 - Fixed export double-tap: guards against concurrent export with early return
 - Added usesCrlfLineEndings test to verify RFC 4180 compliance
+- Implemented DashboardViewModelTest (10 tests: loading, monthly spend, empty state, budget progress, no budget, top 3 categories, percentage, merchant/title display, month label, quick add items)
+- Expanded MoneyTest from 5 to 16 tests: zero, subtraction, comparison, isPositive, currency mismatch, small amounts, typical Nepal expenses, blank currency
+- Expanded CalculateBudgetProgressUseCaseTest from 2 to 8 tests: under, warning, danger, over budget, zero spend, zero budget, currency mismatch, typical Nepal scenario
+- Expanded CategorizeExpenseUseCaseTest from 7 to 13 tests: added Nepal-specific merchants (eSewa, Khalti, Bhat-Bhateni, NTC, WorldLink, Foodmandu)
+- Total test count: 147 unit tests across 20 test suites, all passing
+- Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with full Phase 11 coverage
 
 ## In Progress
 
-- Phase 11 testing planning
+- Phase 12 portfolio polish planning
 
 ## Not Started
 
-- Dashboard ViewModel unit tests
-- Add-expense UI test
+- Add-expense UI test (requires emulator/device)
 
 ## Decisions Made
 

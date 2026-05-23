@@ -146,7 +146,7 @@
 - [x] Add recurring schedule unit tests
 - [x] Add CSV escaping unit tests
 - [x] Add Room DAO tests
-- [ ] Add dashboard ViewModel tests
+- [x] Add dashboard ViewModel tests
 - [ ] Add add-expense UI test
 
 ## Phase 12 - Portfolio Polish

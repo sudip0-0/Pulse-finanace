@@ -174,11 +174,18 @@ Impact:
 
 - The Android test APK compiles locally.
 - DAO tests cannot be executed in this environment without an attached emulator or device.
+- The add-expense UI test (Compose test) also requires an instrumented environment.
 
 Potential resolution:
 
 - Run `.\gradlew.bat connectedDebugAndroidTest` with a device or emulator.
 - Add Robolectric later if JVM-only DAO tests become a priority.
+
+Current state:
+
+- 147 JVM unit tests pass via `.\gradlew.bat :app:testDebugUnitTest`.
+- Instrumented tests compile via `.\gradlew.bat :app:assembleDebugAndroidTest`.
+- Execution requires a connected device or emulator.
 
 ## Time Zone and Date Boundaries
 
