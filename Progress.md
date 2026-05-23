@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 9 recurring expenses implemented
+Status: Phase 10 settings and export implemented
 
-The project now has a complete recurring expense management system. Users can create, edit, pause, resume, and delete recurring rules for predictable Nepal expenses (rent, internet, electricity, etc.). Due expenses are automatically generated on app start with duplicate prevention. The recurring list shows next due date, overdue status, and pause state. Generated expenses appear in transactions, dashboard, and analytics.
+The project now has a complete settings screen with monthly budget editor (dialog with NPR input), CSV export via Android document creation APIs (no storage permissions needed), currency display showing NPR (रू), notification toggle placeholder, recurring expenses entry point, and categories placeholder. CSV export uses UTF-8 with BOM for Excel compatibility and preserves Nepali Unicode text.
 
 ## Completed
 
@@ -130,15 +130,29 @@ The project now has a complete recurring expense management system. Users can cr
 - Added RecurringViewModelTest (6 tests: load, empty, pause, resume, delete, overdue label)
 - Added AddRecurringRuleViewModelTest (9 tests: categories, validation, save, dots, frequency, interval, edit mode)
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug` succeeds with recurring expenses
+- Implemented SettingsViewModel with @HiltViewModel consuming BudgetRepository, ExpenseRepository, and ExportTransactionsCsvUseCase
+- Rewrote SettingsScreen with dark rounded-row style matching Design.md
+- Added monthly budget editor via AlertDialog with NPR amount input and validation
+- Added currency display showing "NPR (रू)" — read-only since multi-currency is not implemented
+- Added notification toggle placeholder (disabled switch with "Coming soon" label)
+- Added recurring expenses entry point navigating to RecurringScreen
+- Added categories entry point as a placeholder row ("View default categories")
+- Implemented CSV export using Android CreateDocument API (no storage permissions needed)
+- CSV export writes UTF-8 with BOM for Excel compatibility with Nepali Unicode
+- Export covers current month's expenses with all planned columns (Date, Title, Merchant, Category, Amount, Currency, Payment Method, Note, Recurring)
+- Wired ExportTransactionsCsvUseCase in UseCaseModule
+- Added SettingsViewModelTest (7 tests: budget load, not set, validation, save, export ready, export complete, currency label)
+- Expanded ExportTransactionsCsvUseCaseTest to 8 tests: escaping, header, Nepali Unicode, recurring column, non-recurring, amount format, empty fields, multiple rows
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with settings and export
 
 ## In Progress
 
-- Phase 10 settings and export planning
+- Phase 11 testing planning
 
 ## Not Started
 
-- CSV export UI
 - Dashboard ViewModel unit tests
+- Add-expense UI test
 
 ## Decisions Made
 

@@ -9,6 +9,7 @@ import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CalculateBudgetProgressUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
 import com.pulsefinance.domain.usecase.DeleteExpenseUseCase
+import com.pulsefinance.domain.usecase.ExportTransactionsCsvUseCase
 import com.pulsefinance.domain.usecase.GenerateDueRecurringExpensesUseCase
 import com.pulsefinance.domain.usecase.ObserveDashboardUseCase
 import com.pulsefinance.domain.usecase.ObserveTransactionsUseCase
@@ -89,5 +90,12 @@ object UseCaseModule {
     ): GenerateDueRecurringExpensesUseCase = GenerateDueRecurringExpensesUseCase(
         recurringRuleRepository = recurringRuleRepository,
         expenseRepository = expenseRepository,
+    )
+
+    @Provides
+    fun provideExportTransactionsCsv(
+        categoryRepository: CategoryRepository,
+    ): ExportTransactionsCsvUseCase = ExportTransactionsCsvUseCase(
+        categoryRepository = categoryRepository,
     )
 }

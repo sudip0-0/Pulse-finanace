@@ -85,9 +85,18 @@ Impact:
 
 - Users cannot restore or migrate data from CSV yet.
 
+Current state:
+
+- CSV export is implemented via Android CreateDocument API (SAF).
+- No storage permissions required.
+- UTF-8 with BOM for Excel compatibility.
+- Nepali Unicode text is preserved.
+- Export covers current month's expenses.
+
 Potential resolution:
 
 - Add CSV import with duplicate detection.
+- Add date range selection for export.
 
 ## Single Currency First
 
@@ -106,16 +115,17 @@ Potential resolution:
 
 ## Domain Repositories Are Now Wired Through Hilt
 
-All phases through Phase 9 are connected through Hilt DI modules and reactive ViewModels.
+All phases through Phase 10 are connected through Hilt DI modules and reactive ViewModels.
 
 Impact:
 
-- The dashboard, transactions, analytics, and recurring screens all read real persisted data.
+- Dashboard, transactions, analytics, recurring, and settings screens all read real persisted data.
 - Recurring expense generation runs on app start via DashboardViewModel.
+- CSV export and budget editing are functional.
 
 Remaining:
 
-- Settings screen still needs its own ViewModel wired for budget editing and export.
+- Category management screen is a placeholder only.
 
 ## Chart Rendering Complexity
 

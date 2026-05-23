@@ -129,14 +129,14 @@
 
 ## Phase 10 - Settings and Export
 
-- [ ] Build settings screen
-- [ ] Add monthly budget editor
-- [ ] Add currency display with NPR default
-- [ ] Add notification toggle placeholder
-- [ ] Add recurring expenses entry point
-- [ ] Add category management entry point
-- [ ] Implement CSV export
-- [ ] Verify CSV handles Nepali Unicode text
+- [x] Build settings screen
+- [x] Add monthly budget editor
+- [x] Add currency display with NPR default
+- [x] Add notification toggle placeholder
+- [x] Add recurring expenses entry point
+- [x] Add category management entry point
+- [x] Implement CSV export
+- [x] Verify CSV handles Nepali Unicode text
 
 ## Phase 11 - Testing
 
