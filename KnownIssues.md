@@ -136,6 +136,26 @@ Potential resolution:
 - Add migration tests.
 - Avoid destructive schema changes after sample data exists.
 
+Current state:
+
+- Schema version `1` is exported.
+- No historical migrations exist yet because this is the first Room schema.
+- Future schema changes must add explicit migrations before release builds depend on local user data.
+
+## Instrumented Database Tests Need A Device
+
+Room DAO coverage has been added under `androidTest`.
+
+Impact:
+
+- The Android test APK compiles locally.
+- DAO tests cannot be executed in this environment without an attached emulator or device.
+
+Potential resolution:
+
+- Run `.\gradlew.bat connectedDebugAndroidTest` with a device or emulator.
+- Add Robolectric later if JVM-only DAO tests become a priority.
+
 ## Time Zone and Date Boundaries
 
 Expense grouping by day/month must respect the user's local timezone.

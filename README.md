@@ -54,7 +54,7 @@ The app is not a generic budgeting clone. It is localized around:
 
 ## Current Implementation Status
 
-Phase 1 project foundation is implemented:
+Phase 1 project foundation and Phase 2 local database are implemented:
 
 - Android `:app` module
 - Kotlin and Jetpack Compose
@@ -63,8 +63,12 @@ Phase 1 project foundation is implemented:
 - Clean Architecture package boundaries
 - Shared Compose components
 - Static Nepal-specific preview data using NPR examples
+- Room database schema for expenses, categories, category keywords, recurring rules, and budgets
+- Deterministic Nepal category and keyword seed data
+- Type converters for local dates, instants, and year-month values
+- DAO coverage for CRUD, date ranges, category aggregation, recurring rules, budgets, and keyword lookup
 
-Room, real expense persistence, categorization business logic, recurring generation, CSV export, and automated tests are still planned follow-up work.
+Repository implementations, domain business logic, recurring generation, CSV export, and UI integration with persisted data are still planned follow-up work.
 
 ## Nepal-Specific Categories
 

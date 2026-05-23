@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 1 foundation implemented
+Status: Phase 2 local database implemented
 
-The project now has a buildable Android app foundation for a Nepal-focused version of Pulse. The app uses Kotlin, Jetpack Compose, Material 3, Navigation Compose, and a dark Pulse theme with static Nepal-specific preview data.
+The project now has a buildable Android app foundation and Room local persistence for the Nepal-focused Pulse MVP. The app uses Kotlin, Jetpack Compose, Material 3, Navigation Compose, a dark Pulse theme, and a Room schema for expenses, categories, category keywords, recurring rules, and budgets.
 
 ## Completed
 
@@ -26,20 +26,28 @@ The project now has a buildable Android app foundation for a Nepal-focused versi
 - Added shared UI components for cards, category rows, transactions, and floating bottom navigation
 - Added Nepal-specific sample merchants including Pathao, Foodmandu, Daraz, Bhat-Bhateni, eSewa, Khalti, NTC, Ncell, NEA, WorldLink, and Vianet
 - Verified `.\gradlew.bat :app:assembleDebug` succeeds
+- Added Room dependencies, compiler setup, and exported schema configuration
+- Created `PulseDatabase`
+- Created Room entities for expenses, categories, category keywords, recurring rules, and budgets
+- Created DAOs for CRUD, date range queries, category spend aggregation, budget lookup, recurring rules, and keyword lookup
+- Added converters for `LocalDate`, `Instant`, and `YearMonth`
+- Seeded deterministic default categories and Nepal-specific keywords
+- Added migration holder for future Room schema versions
+- Added converter unit tests and instrumented database/DAO tests
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebugAndroidTest` succeeds
 
 ## In Progress
 
-- Phase 2 local database planning
+- Phase 3 domain layer planning
 
 ## Not Started
 
-- Room database implementation
 - Expense CRUD
 - Real dashboard state from persisted expenses
 - Production analytics charts
 - Recurring expenses
 - CSV export
-- Automated tests
+- Broader domain and UI tests
 
 ## Decisions Made
 
@@ -63,10 +71,10 @@ The project now has a buildable Android app foundation for a Nepal-focused versi
 
 ## Next Recommended Step
 
-Implement the local database and first domain rules:
+Implement the first domain rules and repository bridge:
 
-1. Room database with expenses and categories
-2. Seed default Nepal categories and keyword aliases
+1. Domain money and category models
+2. Repository interfaces and data repository implementations
 3. Nepal keyword categorization use case
 4. Unit tests for categorization and money formatting
 5. Connect Add Expense and Dashboard to real data

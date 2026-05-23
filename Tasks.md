@@ -13,18 +13,18 @@
 
 ## Phase 2 - Local Database
 
-- [ ] Add Room dependencies
-- [ ] Create `PulseDatabase`
-- [ ] Create `ExpenseEntity`
-- [ ] Create `CategoryEntity`
-- [ ] Create `CategoryKeywordEntity`
-- [ ] Create `RecurringRuleEntity`
-- [ ] Create `BudgetEntity`
-- [ ] Create DAOs
-- [ ] Add type converters for dates, instants, and year-month values
-- [ ] Seed default categories
-- [ ] Seed Nepal-specific category keywords
-- [ ] Add database migration strategy
+- [x] Add Room dependencies
+- [x] Create `PulseDatabase`
+- [x] Create `ExpenseEntity`
+- [x] Create `CategoryEntity`
+- [x] Create `CategoryKeywordEntity`
+- [x] Create `RecurringRuleEntity`
+- [x] Create `BudgetEntity`
+- [x] Create DAOs
+- [x] Add type converters for dates, instants, and year-month values
+- [x] Seed default categories
+- [x] Seed Nepal-specific category keywords
+- [x] Add database migration strategy
 
 ## Phase 3 - Domain Layer
 
@@ -128,7 +128,7 @@
 - [ ] Add budget calculation unit tests
 - [ ] Add recurring schedule unit tests
 - [ ] Add CSV escaping unit tests
-- [ ] Add Room DAO tests
+- [x] Add Room DAO tests
 - [ ] Add dashboard ViewModel tests
 - [ ] Add add-expense UI test
 
