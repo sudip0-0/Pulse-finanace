@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 5 dashboard UI implemented
+Status: Phase 6 add expense UI implemented
 
-The project now has a buildable Android app with Room persistence, a pure Kotlin domain layer, concrete data repositories, Hilt dependency injection, and a fully reactive dashboard screen. The dashboard consumes real data through a ViewModel backed by ObserveDashboardUseCase, with proper lifecycle-aware StateFlow collection, loading/empty/error states, and accessibility semantics.
+The project now has a complete first vertical slice: users can add expenses through a full-featured form with Nepal-specific auto-categorization, and the dashboard reactively updates to show the new data. The Add Expense screen includes amount input with NPR prefix, title/merchant fields with debounced categorization suggestions, category chip selector, payment method chips, date field, note field, recurring toggle, and validation.
 
 ## Completed
 
@@ -75,18 +75,27 @@ The project now has a buildable Android app with Room persistence, a pure Kotlin
 - Added TransactionRow merged semantics for screen reader coherence
 - Migrated from kapt to KSP for both Room and Hilt annotation processing
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with Hilt + KSP
+- Implemented AddExpenseViewModel with @HiltViewModel consuming AddExpenseUseCase and CategorizeExpenseUseCase
+- Built full Add Expense screen with amount input (NPR prefix, decimal keyboard), title, merchant, category chips, payment method chips, date, note, and recurring toggle
+- Added debounced auto-categorization that suggests categories as user types merchant/title
+- Category suggestion shows matched keyword and auto-selects if no manual selection made
+- Added validation: amount required, title or merchant required, category required
+- Save navigates back to dashboard on success via LaunchedEffect
+- Wired AddExpenseUseCase and CategorizeExpenseUseCase in UseCaseModule
+- Added kotlinx-coroutines-test dependency for ViewModel testing
+- Added AddExpenseViewModelTest covering save validation, categorization, and success flow
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
 
 ## In Progress
 
-- Phase 6 add expense UI planning
+- Phase 7 transactions UI planning
 
 ## Not Started
 
-- Expense CRUD UI (Add/Edit/Delete screens)
+- Transactions UI (list, search, filter, edit, delete)
 - Production analytics charts
 - Recurring expenses UI
 - CSV export UI
-- Broader domain and UI tests
 - Dashboard ViewModel unit tests
 
 ## Decisions Made
@@ -111,11 +120,10 @@ The project now has a buildable Android app with Room persistence, a pure Kotlin
 
 ## Next Recommended Step
 
-Implement the Add Expense UI:
+Implement the Transactions UI:
 
-1. Build amount input with numeric keypad
-2. Build merchant/title field with auto-categorization suggestion
-3. Build category selector
-4. Build date and payment method selectors
-5. Wire AddExpenseUseCase through a ViewModel
-6. Navigate back to dashboard after save
+1. Build TransactionsViewModel consuming ObserveTransactionsUseCase
+2. Build transaction list with search, category filter, and date range filter
+3. Add edit expense flow (reuse Add Expense screen with pre-filled data)
+4. Add delete confirmation dialog
+5. Wire UpdateExpenseUseCase and DeleteExpenseUseCase through Hilt

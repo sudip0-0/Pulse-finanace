@@ -71,17 +71,19 @@
 
 ## Phase 6 - Add Expense UI
 
-- [ ] Build amount input
-- [ ] Build merchant/title input
-- [ ] Build category selector
-- [ ] Show auto-category suggestion
-- [ ] Build date selector
-- [ ] Build payment method selector
-- [ ] Build recurring toggle
-- [ ] Build note field
-- [ ] Save expense to database
-- [ ] Validate required fields
-- [ ] Return to dashboard after save
+- [x] Build amount input
+- [x] Build merchant/title input
+- [x] Build category selector
+- [x] Show auto-category suggestion
+- [x] Build date selector
+- [x] Build payment method selector
+- [x] Build recurring toggle
+- [x] Build note field
+- [x] Save expense to database
+- [x] Validate required fields
+- [x] Return to dashboard after save
+- [x] Wire AddExpenseUseCase and CategorizeExpenseUseCase through Hilt
+- [x] Add ViewModel unit tests for save flow and categorization
 
 ## Phase 7 - Transactions UI
 
