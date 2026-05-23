@@ -2,8 +2,9 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("org.jetbrains.kotlin.kapt")
+    id("com.google.devtools.ksp")
     id("androidx.room")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -37,6 +38,7 @@ android {
 dependencies {
     val composeBom = platform("androidx.compose:compose-bom:2025.10.01")
     val roomVersion = "2.8.4"
+    val hiltVersion = "2.56.2"
 
     implementation(composeBom)
     androidTestImplementation(composeBom)
@@ -52,7 +54,12 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.9.5")
     implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.room:room-runtime:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    // Hilt
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    ksp("com.google.dagger:hilt-android-compiler:$hiltVersion")
+    implementation("androidx.hilt:hilt-navigation-compose:1.3.0")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
 

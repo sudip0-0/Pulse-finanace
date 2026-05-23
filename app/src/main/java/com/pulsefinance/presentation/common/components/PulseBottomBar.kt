@@ -1,19 +1,16 @@
 package com.pulsefinance.presentation.common.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ReceiptLong
 import androidx.compose.material.icons.filled.Analytics
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
@@ -44,15 +41,14 @@ fun PulseBottomBar(
     onRouteSelected: (PulseRoute) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(
+    NavigationBar(
         modifier = modifier
-            .fillMaxWidth()
             .navigationBarsPadding()
             .padding(horizontal = PulseSpacing.xl, vertical = PulseSpacing.sm)
             .height(PulseSpacing.navHeight)
-            .clip(MaterialTheme.shapes.large)
-            .background(PulseColors.SurfaceHigh),
-        horizontalArrangement = Arrangement.SpaceEvenly,
+            .clip(MaterialTheme.shapes.large),
+        containerColor = PulseColors.SurfaceHigh,
+        tonalElevation = PulseSpacing.xxs,
     ) {
         PulseBottomNavItems.forEach { item ->
             val selected = selectedRoute == item.route.path

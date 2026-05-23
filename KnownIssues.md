@@ -104,20 +104,18 @@ Potential resolution:
 
 ## Technical Risks
 
-## Domain Repositories Are Now Implemented
+## Domain Repositories Are Now Wired Through Hilt
 
-The Phase 4 data layer provides concrete repository implementations backed by Room DAOs.
+The Phase 5 implementation connects repositories to the UI through Hilt DI modules and a reactive ViewModel.
 
 Impact:
 
-- Domain rules are testable with fakes.
-- Repository implementations are ready for ViewModel wiring.
-- UI screens still do not read or write real persisted data until DI is wired.
+- The dashboard screen reads real persisted data.
+- Adding expenses will reactively update the dashboard.
 
 Remaining:
 
-- Wire repositories through Hilt dependency injection.
-- Connect ViewModels to real repository instances.
+- Other screens (Transactions, Analytics, Settings) still need their own ViewModels wired.
 
 ## Chart Rendering Complexity
 

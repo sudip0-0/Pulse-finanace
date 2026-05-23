@@ -55,15 +55,19 @@
 
 ## Phase 5 - Dashboard UI
 
-- [ ] Build dashboard header
-- [ ] Build monthly spend card
-- [ ] Build add expense CTA
-- [ ] Build budget progress card
-- [ ] Build top category cards
-- [ ] Build quick add row
-- [ ] Build bottom navigation
-- [ ] Connect dashboard to real ViewModel state
-- [ ] Add loading and empty states
+- [x] Build dashboard header
+- [x] Build monthly spend card
+- [x] Build add expense CTA
+- [x] Build budget progress card
+- [x] Build top category cards
+- [x] Build quick add row
+- [x] Build bottom navigation
+- [x] Connect dashboard to real ViewModel state
+- [x] Add loading and empty states
+- [x] Add Hilt dependency injection
+- [x] Wire DI modules (Database, Repository, UseCase)
+- [x] Add accessibility semantics to progress bar and transaction rows
+- [x] Fix NPR display to use रू symbol
 
 ## Phase 6 - Add Expense UI
 

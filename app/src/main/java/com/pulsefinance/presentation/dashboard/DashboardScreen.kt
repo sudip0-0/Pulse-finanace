@@ -4,12 +4,14 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -18,56 +20,136 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import com.pulsefinance.presentation.common.components.CategorySpendCard
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.pulsefinance.domain.model.BudgetStatus
 import com.pulsefinance.presentation.common.components.PulseCard
-import com.pulsefinance.presentation.common.components.TransactionRow
 import com.pulsefinance.presentation.common.theme.PulseColors
 import com.pulsefinance.presentation.common.theme.PulseSpacing
-import com.pulsefinance.presentation.preview.PulsePreviewData
 
 @Composable
-fun DashboardScreen(onAddExpense: () -> Unit) {
-    LazyColumn(
+fun DashboardScreen(
+    onAddExpense: () -> Unit,
+    viewModel: DashboardViewModel = hiltViewModel(),
+) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    when {
+        state.isLoading -> DashboardLoading()
+        state.errorMessage != null -> DashboardError(message = state.errorMessage!!)
+        state.isEmpty -> DashboardEmpty(onAddExpense = onAddExpense)
+        else -> DashboardContent(state = state, onAddExpense = onAddExpense)
+    }
+}
+
+@Composable
+private fun DashboardLoading() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PulseColors.Background),
+        contentAlignment = Alignment.Center,
+    ) {
+        CircularProgressIndicator(color = PulseColors.Primary)
+    }
+}
+
+@Composable
+private fun DashboardError(message: String) {
+    Box(
         modifier = Modifier
             .fillMaxSize()
             .background(PulseColors.Background)
-            .padding(horizontal = PulseSpacing.xl),
+            .padding(PulseSpacing.xl),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(
+            text = message,
+            color = PulseColors.Danger,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+
+@Composable
+private fun DashboardEmpty(onAddExpense: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PulseColors.Background)
+            .padding(PulseSpacing.xl),
+        contentAlignment = Alignment.Center,
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                text = "No expenses this month",
+                color = PulseColors.TextSecondary,
+                style = MaterialTheme.typography.titleLarge,
+            )
+            Button(
+                onClick = onAddExpense,
+                modifier = Modifier.padding(top = PulseSpacing.lg),
+            ) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                Text(text = "Add expense")
+            }
+        }
+    }
+}
+
+@Composable
+private fun DashboardContent(state: DashboardUiState, onAddExpense: () -> Unit) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PulseColors.Background),
+        contentPadding = PaddingValues(
+            start = PulseSpacing.xl,
+            end = PulseSpacing.xl,
+            top = PulseSpacing.xl,
+            bottom = PulseSpacing.xl + PulseSpacing.navHeight,
+        ),
         verticalArrangement = Arrangement.spacedBy(PulseSpacing.xl),
     ) {
         item { DashboardHeader() }
-        item { MonthlySpendCard(onAddExpense = onAddExpense) }
-        item { BudgetCard() }
-        items(PulsePreviewData.categories.take(3)) { category ->
-            CategorySpendCard(
-                name = category.name,
-                amount = category.amount,
-                percent = category.percent,
-                color = category.color,
-            )
+        item { MonthlySpendCard(amount = state.monthlySpend, onAddExpense = onAddExpense) }
+        if (state.budgetState != null) {
+            item { BudgetCard(budget = state.budgetState) }
         }
-        item { QuickAddRow() }
-        item {
-            Text(text = "Recent transactions", style = MaterialTheme.typography.titleLarge)
+        if (state.categorySpending.isNotEmpty()) {
+            items(state.categorySpending, key = { it.categoryId }) { category ->
+                CategorySpendRow(
+                    name = category.name,
+                    amount = category.amount,
+                    percent = category.percent,
+                    color = parseColor(category.colorHex),
+                )
+            }
         }
-        items(PulsePreviewData.transactions.take(4)) { transaction ->
-            TransactionRow(
-                merchant = transaction.merchant,
-                category = transaction.category,
-                amount = transaction.amount,
-                dateLabel = transaction.dateLabel,
-                color = transaction.color,
-            )
+        item { QuickAddRow(items = state.quickAddItems) }
+        if (state.recentTransactions.isNotEmpty()) {
+            item {
+                Text(text = "Recent transactions", style = MaterialTheme.typography.titleLarge)
+            }
+            items(state.recentTransactions, key = { it.id }) { transaction ->
+                TransactionItem(transaction = transaction)
+            }
         }
     }
 }
@@ -75,16 +157,15 @@ fun DashboardScreen(onAddExpense: () -> Unit) {
 @Composable
 private fun DashboardHeader() {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = PulseSpacing.xl),
+        modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
             modifier = Modifier
                 .size(48.dp)
                 .clip(CircleShape)
-                .background(PulseColors.SurfaceHigh),
+                .background(PulseColors.SurfaceHigh)
+                .semantics { contentDescription = "Profile avatar" },
             contentAlignment = Alignment.Center,
         ) {
             Text(text = "AS", style = MaterialTheme.typography.titleMedium)
@@ -97,58 +178,71 @@ private fun DashboardHeader() {
             Text(text = "Welcome,", color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyLarge)
             Text(text = "Aayush Shrestha", style = MaterialTheme.typography.titleLarge)
         }
-        IconButton(onClick = {}, enabled = false) {
+        IconButton(onClick = {}) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
         }
-        IconButton(onClick = {}, enabled = false) {
+        IconButton(onClick = {}) {
             Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
         }
     }
 }
 
 @Composable
-private fun MonthlySpendCard(onAddExpense: () -> Unit) {
+private fun MonthlySpendCard(amount: String, onAddExpense: () -> Unit) {
     PulseCard(containerColor = PulseColors.SurfaceHigh) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = "This month", color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyLarge)
-                Text(text = "NPR 2,418.50", style = MaterialTheme.typography.displayMedium)
+                Text(
+                    text = amount,
+                    style = MaterialTheme.typography.displayMedium,
+                    modifier = Modifier.semantics { contentDescription = "Monthly spend: $amount" },
+                )
             }
             Button(onClick = onAddExpense) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                Text(text = "Add expense")
+                Text(text = "Add")
             }
         }
     }
 }
 
 @Composable
-private fun BudgetCard() {
+private fun BudgetCard(budget: BudgetUiState) {
+    val progressColor = when (budget.status) {
+        BudgetStatus.Under -> PulseColors.Success
+        BudgetStatus.Warning -> PulseColors.Warning
+        BudgetStatus.Danger -> PulseColors.Danger
+        BudgetStatus.OverBudget -> PulseColors.Danger
+    }
+    val progressDescription = "Budget ${budget.percentLabel} used. ${budget.remainingLabel}"
+
     PulseCard {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(text = "Budget", style = MaterialTheme.typography.titleLarge)
-            Text(text = "69%", color = PulseColors.Success, style = MaterialTheme.typography.titleMedium)
+            Text(text = budget.percentLabel, color = progressColor, style = MaterialTheme.typography.titleMedium)
         }
         Text(
-            text = "NPR 1,081.50 left",
+            text = budget.remainingLabel,
             color = PulseColors.TextSecondary,
             style = MaterialTheme.typography.bodyLarge,
             modifier = Modifier.padding(top = PulseSpacing.xs),
         )
         LinearProgressIndicator(
-            progress = { 0.69f },
+            progress = { budget.percent },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = PulseSpacing.md),
-            color = PulseColors.Success,
+                .padding(top = PulseSpacing.md)
+                .semantics { contentDescription = progressDescription },
+            color = progressColor,
             trackColor = PulseColors.SurfacePressed,
             strokeCap = StrokeCap.Round,
         )
         Text(
-            text = "NPR 2,418.50 of NPR 3,500.00",
+            text = budget.progressLabel,
             color = PulseColors.TextMuted,
             style = MaterialTheme.typography.bodyMedium,
             modifier = Modifier.padding(top = PulseSpacing.sm),
@@ -157,16 +251,102 @@ private fun BudgetCard() {
 }
 
 @Composable
-private fun QuickAddRow() {
+private fun CategorySpendRow(
+    name: String,
+    amount: String,
+    percent: String,
+    color: Color,
+) {
+    PulseCard {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {
+                    contentDescription = "$name: $amount, $percent of total"
+                },
+            horizontalArrangement = Arrangement.spacedBy(PulseSpacing.md),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .clip(CircleShape)
+                    .background(color.copy(alpha = 0.18f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .clip(CircleShape)
+                        .background(color),
+                )
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = name, style = MaterialTheme.typography.titleMedium)
+                Text(text = percent, color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyMedium)
+            }
+            Text(text = amount, style = MaterialTheme.typography.titleMedium)
+        }
+    }
+}
+
+@Composable
+private fun TransactionItem(transaction: TransactionUiModel) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics(mergeDescendants = true) {
+                contentDescription = "${transaction.merchant}, ${transaction.amount}, ${transaction.dateLabel}"
+            },
+        horizontalArrangement = Arrangement.spacedBy(PulseSpacing.md),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .clip(CircleShape)
+                .background(PulseColors.SurfaceHigh),
+            contentAlignment = Alignment.Center,
+        ) {
+            Text(
+                text = transaction.merchant.first().uppercase(),
+                color = PulseColors.Primary,
+                style = MaterialTheme.typography.titleMedium,
+            )
+        }
+        Column(modifier = Modifier.weight(1f)) {
+            Text(text = transaction.merchant, style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = transaction.dateLabel,
+                color = PulseColors.TextSecondary,
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+        Text(text = transaction.amount, style = MaterialTheme.typography.titleMedium)
+    }
+}
+
+@Composable
+private fun QuickAddRow(items: List<String>) {
     Column(verticalArrangement = Arrangement.spacedBy(PulseSpacing.sm)) {
         Text(text = "Quick add", style = MaterialTheme.typography.titleLarge)
-        Row(
-            modifier = Modifier.fillMaxWidth(),
+        LazyRow(
             horizontalArrangement = Arrangement.spacedBy(PulseSpacing.xs),
         ) {
-            PulsePreviewData.quickAddMerchants.take(4).forEach { label ->
-                AssistChip(onClick = {}, label = { Text(text = label) }, enabled = false)
+            items(items) { label ->
+                AssistChip(
+                    onClick = {},
+                    label = { Text(text = label) },
+                )
             }
         }
+    }
+}
+
+private fun parseColor(hex: String): Color {
+    return try {
+        Color(android.graphics.Color.parseColor(hex))
+    } catch (_: Exception) {
+        PulseColors.Other
     }
 }

@@ -6,17 +6,17 @@ import org.junit.Test
 class MoneyTest {
     @Test
     fun formatsNprMinorUnits() {
-        assertEquals("NPR 2,418.50", Money(241850).format())
+        assertEquals("रू 2,418.50", Money(241850).format())
     }
 
     @Test
     fun formatsNegativeMinorUnitsWithoutFloatingPointMath() {
-        assertEquals("-NPR 2,418.05", Money(-241805).format())
+        assertEquals("-रू 2,418.05", Money(-241805).format())
     }
 
     @Test
     fun formatsLargeMinorUnitsPredictably() {
-        assertEquals("NPR 92,233,720,368,547,758.07", Money(Long.MAX_VALUE).format())
+        assertEquals("रू 92,233,720,368,547,758.07", Money(Long.MAX_VALUE).format())
     }
 
     @Test(expected = IllegalArgumentException::class)

@@ -18,9 +18,9 @@
 |---------|---------|
 | UI | Jetpack Compose (BOM 2025.10.01), Material 3 |
 | Navigation | Navigation Compose 2.9.5 |
-| Database | Room 2.8.4 (with kapt annotation processing) |
+| Database | Room 2.8.4 (with KSP annotation processing) |
 | Lifecycle | Lifecycle Runtime Compose 2.9.4 |
-| DI | Hilt (when added) |
+| DI | Hilt 2.56.2 |
 | Icons | Material Icons Extended |
 
 ## Key Plugins
@@ -28,7 +28,8 @@
 - `com.android.application`
 - `org.jetbrains.kotlin.android`
 - `org.jetbrains.kotlin.plugin.compose`
-- `org.jetbrains.kotlin.kapt`
+- `com.google.devtools.ksp`
+- `com.google.dagger.hilt.android`
 - `androidx.room`
 
 ## Common Commands
@@ -47,7 +48,7 @@
 ./gradlew clean
 
 # Generate Room schema (auto-exported to app/schemas/)
-./gradlew kaptDebugKotlin
+./gradlew kspDebugKotlin
 ```
 
 ## Testing

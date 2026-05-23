@@ -16,6 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
 import com.pulsefinance.presentation.common.theme.PulseColors
 import com.pulsefinance.presentation.common.theme.PulseSpacing
@@ -30,7 +32,11 @@ fun CategorySpendCard(
 ) {
     PulseCard(modifier = modifier) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .semantics(mergeDescendants = true) {
+                    contentDescription = "$name: $amount, $percent of total"
+                },
             horizontalArrangement = Arrangement.spacedBy(PulseSpacing.md),
             verticalAlignment = Alignment.CenterVertically,
         ) {

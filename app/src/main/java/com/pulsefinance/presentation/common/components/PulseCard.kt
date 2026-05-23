@@ -1,6 +1,6 @@
 package com.pulsefinance.presentation.common.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,13 +21,10 @@ fun PulseCard(
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = containerColor),
-        content = {
-            androidx.compose.foundation.layout.Column(
-                modifier = Modifier
-                    .background(containerColor)
-                    .padding(PulseSpacing.lg),
-                content = content,
-            )
-        },
-    )
+    ) {
+        Column(
+            modifier = Modifier.padding(PulseSpacing.lg),
+            content = content,
+        )
+    }
 }

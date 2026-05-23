@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 4 data repositories implemented
+Status: Phase 5 dashboard UI implemented
 
-The project now has a buildable Android app foundation, Room local persistence, a pure Kotlin domain layer, and concrete data repository implementations that bridge Room DAOs to domain repository interfaces. Entity-domain mappers handle Money composition, enum translation, and null-safe payment method mapping. All reactive reads use Flow with IO dispatcher offloading.
+The project now has a buildable Android app with Room persistence, a pure Kotlin domain layer, concrete data repositories, Hilt dependency injection, and a fully reactive dashboard screen. The dashboard consumes real data through a ViewModel backed by ObserveDashboardUseCase, with proper lifecycle-aware StateFlow collection, loading/empty/error states, and accessibility semantics.
 
 ## Completed
 
@@ -60,10 +60,25 @@ The project now has a buildable Android app foundation, Room local persistence, 
 - All repository writes use `withContext(Dispatchers.IO)` for suspend safety
 - Added mapper round-trip unit tests for all five entity-domain pairs
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
+- Added Hilt dependency injection with KSP annotation processing
+- Created DatabaseModule, RepositoryModule, and UseCaseModule Hilt modules
+- Created DashboardViewModel with @HiltViewModel consuming ObserveDashboardUseCase
+- Created DashboardUiState with Loading, Empty, Error, and Loaded variants
+- Rewrote DashboardScreen to use collectAsStateWithLifecycle() for lifecycle-safe collection
+- Added budget progress color coding (green/amber/red) based on BudgetStatus
+- Added accessibility semantics to progress bar, transaction rows, and category cards
+- Fixed Money.format() to display रू symbol for NPR instead of raw currency code
+- Fixed PulseCard redundant background paint
+- Fixed PulseBottomBar to use NavigationBar instead of raw Row
+- Fixed QuickAddRow to use LazyRow for horizontal scrolling on narrow screens
+- Added bottom content padding to LazyColumn to avoid nav bar overlap
+- Added TransactionRow merged semantics for screen reader coherence
+- Migrated from kapt to KSP for both Room and Hilt annotation processing
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds with Hilt + KSP
 
 ## In Progress
 
-- Phase 5 dashboard UI planning
+- Phase 6 add expense UI planning
 
 ## Not Started
 
@@ -96,10 +111,11 @@ The project now has a buildable Android app foundation, Room local persistence, 
 
 ## Next Recommended Step
 
-Implement the dashboard UI:
+Implement the Add Expense UI:
 
-1. Wire repositories through dependency injection (Hilt modules)
-2. Build DashboardViewModel consuming ObserveDashboardUseCase
-3. Connect Compose dashboard screen to real ViewModel state
-4. Add loading and empty states
-5. Verify reactive updates when expenses are added
+1. Build amount input with numeric keypad
+2. Build merchant/title field with auto-categorization suggestion
+3. Build category selector
+4. Build date and payment method selectors
+5. Wire AddExpenseUseCase through a ViewModel
+6. Navigate back to dashboard after save

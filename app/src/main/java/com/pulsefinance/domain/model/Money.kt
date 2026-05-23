@@ -32,7 +32,8 @@ data class Money(
         val minor = absoluteMinor % MINOR_UNITS_PER_MAJOR
         val formatted = "${major.withGrouping()}." + minor.toString().padStart(2, '0')
         val sign = if (amountMinor < 0) "-" else ""
-        return "$sign$currencyCode $formatted"
+        val symbol = displaySymbol(currencyCode)
+        return "$sign$symbol $formatted"
     }
 
     private fun requireSameCurrency(other: Money) {
@@ -44,6 +45,11 @@ data class Money(
         const val MINOR_UNITS_PER_MAJOR = 100L
 
         fun zero(currencyCode: String = DEFAULT_CURRENCY): Money = Money(0, currencyCode)
+
+        private fun displaySymbol(currencyCode: String): String = when (currencyCode) {
+            "NPR" -> "रू"
+            else -> currencyCode
+        }
     }
 }
 
