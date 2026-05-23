@@ -81,7 +81,7 @@ fun AddExpenseScreen(
             .verticalScroll(rememberScrollState()),
     ) {
         TopAppBar(
-            title = { Text(text = "Add Expense") },
+            title = { Text(text = if (state.isEditing) "Edit Expense" else "Add Expense") },
             navigationIcon = {
                 IconButton(onClick = onBack) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Close")
@@ -304,7 +304,7 @@ fun AddExpenseScreen(
                     .height(52.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = PulseColors.Primary),
             ) {
-                Text(text = if (state.isSaving) "Saving..." else "Save expense")
+                Text(text = if (state.isSaving) "Saving..." else if (state.isEditing) "Update expense" else "Save expense")
             }
 
             Spacer(modifier = Modifier.height(PulseSpacing.xl))

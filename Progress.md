@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 6 add expense UI implemented
+Status: Phase 7 transactions UI implemented
 
-The project now has a complete first vertical slice: users can add expenses through a full-featured form with Nepal-specific auto-categorization, and the dashboard reactively updates to show the new data. The Add Expense screen includes amount input with NPR prefix, title/merchant fields with debounced categorization suggestions, category chip selector, payment method chips, date field, note field, recurring toggle, and validation.
+The project now has a complete expense management flow: users can add, view, search, filter, sort, edit, and delete expenses. The transactions screen observes real persisted data reactively, supports search by title/merchant/note, category filter chips, sort by date or amount, inline edit navigation, and delete with confirmation dialog.
 
 ## Completed
 
@@ -94,15 +94,26 @@ The project now has a complete first vertical slice: users can add expenses thro
 - Added amount input max-length cap (12 characters) to prevent overflow
 - Expanded ViewModel tests: multiple-dot rejection, max-length cap, double-save guard, error clearing, Foodmandu categorization
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds after fixes
+- Implemented TransactionsViewModel with @HiltViewModel consuming ObserveTransactionsUseCase and DeleteExpenseUseCase
+- Built full Transactions screen with search bar, category filter chips (LazyRow), sort dropdown menu, and transaction list
+- Transaction list items show merchant/title, category, amount, date, and delete icon
+- Tapping a transaction navigates to edit (reuses AddExpenseScreen with pre-filled data)
+- Delete shows AlertDialog confirmation before removing
+- Added empty state with "No transactions found" / "No transactions yet" and clear filters action
+- Added sort controls: Newest first, Oldest first, Highest amount, Lowest amount
+- Updated AddExpenseViewModel to support edit mode via SavedStateHandle (loads existing expense by ID)
+- Added EditExpense route with navArgument for expense ID
+- Wired ObserveTransactionsUseCase, UpdateExpenseUseCase, and DeleteExpenseUseCase in UseCaseModule
+- Added TransactionsViewModelTest with 9 tests covering load, search, filter, delete, clear filters, and empty state
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
 
 ## In Progress
 
-- Phase 7 transactions UI planning
+- Phase 8 analytics UI planning
 
 ## Not Started
 
-- Transactions UI (list, search, filter, edit, delete)
-- Production analytics charts
+- Production analytics charts (Compose Canvas donut/bar)
 - Recurring expenses UI
 - CSV export UI
 - Dashboard ViewModel unit tests
@@ -129,10 +140,11 @@ The project now has a complete first vertical slice: users can add expenses thro
 
 ## Next Recommended Step
 
-Implement the Transactions UI:
+Implement the Analytics UI:
 
-1. Build TransactionsViewModel consuming ObserveTransactionsUseCase
-2. Build transaction list with search, category filter, and date range filter
-3. Add edit expense flow (reuse Add Expense screen with pre-filled data)
-4. Add delete confirmation dialog
-5. Wire UpdateExpenseUseCase and DeleteExpenseUseCase through Hilt
+1. Build AnalyticsViewModel consuming category spend data
+2. Implement donut chart with Compose Canvas
+3. Build category legend with amounts and percentages
+4. Add period picker (this week, this month, last month)
+5. Add spending/budget segmented control
+6. Add accessible chart summaries

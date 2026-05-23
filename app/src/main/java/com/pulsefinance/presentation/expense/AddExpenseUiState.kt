@@ -16,6 +16,7 @@ data class AddExpenseUiState(
     val selectedDateText: String = "Today",
     val selectedDateEpochDay: Long? = null,
     val isRecurring: Boolean = false,
+    val isEditing: Boolean = false,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,
     val saved: Boolean = false,

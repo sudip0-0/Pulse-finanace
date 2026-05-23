@@ -92,14 +92,17 @@
 
 ## Phase 7 - Transactions UI
 
-- [ ] Build transaction list
-- [ ] Add search
-- [ ] Add category filter
-- [ ] Add date range filter
-- [ ] Add sort controls
-- [ ] Add edit expense flow
-- [ ] Add delete confirmation
-- [ ] Add empty search state
+- [x] Build transaction list
+- [x] Add search
+- [x] Add category filter
+- [x] Add date range filter (via TransactionFilters support)
+- [x] Add sort controls
+- [x] Add edit expense flow
+- [x] Add delete confirmation
+- [x] Add empty search state
+- [x] Wire ObserveTransactionsUseCase, UpdateExpenseUseCase, DeleteExpenseUseCase through Hilt
+- [x] Add edit route with expense ID navigation argument
+- [x] Add TransactionsViewModel unit tests
 
 ## Phase 8 - Analytics UI
 

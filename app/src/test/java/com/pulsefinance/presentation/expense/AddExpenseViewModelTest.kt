@@ -8,6 +8,7 @@ import com.pulsefinance.domain.model.CategoryKeyword
 import com.pulsefinance.domain.model.KeywordMatchType
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
+import com.pulsefinance.domain.usecase.UpdateExpenseUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
@@ -54,10 +55,13 @@ class AddExpenseViewModelTest {
         val categoryRepository = FakeCategoryRepository(categories)
         return AddExpenseViewModel(
             addExpenseUseCase = AddExpenseUseCase(expenseRepository, categoryRepository),
+            updateExpenseUseCase = UpdateExpenseUseCase(expenseRepository, categoryRepository),
             categorizeExpenseUseCase = CategorizeExpenseUseCase(
                 categoryRepository, FakeKeywordRepository(keywords), expenseRepository,
             ),
             categoryRepository = categoryRepository,
+            expenseRepository = expenseRepository,
+            savedStateHandle = androidx.lifecycle.SavedStateHandle(),
         )
     }
 

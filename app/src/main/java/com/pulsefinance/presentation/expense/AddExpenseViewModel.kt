@@ -1,5 +1,6 @@
 package com.pulsefinance.presentation.expense
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.pulsefinance.domain.model.Category
@@ -8,9 +9,11 @@ import com.pulsefinance.domain.model.Expense
 import com.pulsefinance.domain.model.Money
 import com.pulsefinance.domain.model.PaymentMethod
 import com.pulsefinance.domain.repository.CategoryRepository
+import com.pulsefinance.domain.repository.ExpenseRepository
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CategorizationInput
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
+import com.pulsefinance.domain.usecase.UpdateExpenseUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Instant
 import java.time.LocalDate
@@ -26,23 +29,58 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class AddExpenseViewModel @Inject constructor(
     private val addExpenseUseCase: AddExpenseUseCase,
+    private val updateExpenseUseCase: UpdateExpenseUseCase,
     private val categorizeExpenseUseCase: CategorizeExpenseUseCase,
     private val categoryRepository: CategoryRepository,
+    private val expenseRepository: ExpenseRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(AddExpenseUiState())
     val uiState: StateFlow<AddExpenseUiState> = _uiState
 
     private var categorizationJob: Job? = null
+    private var editingExpenseId: Long? = null
 
     init {
         loadCategories()
+        val expenseId = savedStateHandle.get<Long>("expenseId")
+        if (expenseId != null && expenseId > 0) {
+            loadExpenseForEdit(expenseId)
+        }
     }
 
     private fun loadCategories() {
         viewModelScope.launch {
             val categories = categoryRepository.observeCategories().first()
             _uiState.value = _uiState.value.copy(categories = categories)
+        }
+    }
+
+    private fun loadExpenseForEdit(expenseId: Long) {
+        viewModelScope.launch {
+            val expense = expenseRepository.getExpense(expenseId) ?: return@launch
+            editingExpenseId = expenseId
+            val categories = _uiState.value.categories.ifEmpty {
+                categoryRepository.observeCategories().first()
+            }
+            val category = categories.firstOrNull { it.id == expense.categoryId }
+            val amountMajor = expense.amount.amountMinor / Money.MINOR_UNITS_PER_MAJOR
+            val amountMinor = expense.amount.amountMinor % Money.MINOR_UNITS_PER_MAJOR
+            val amountText = if (amountMinor == 0L) "$amountMajor" else "$amountMajor.${amountMinor.toString().padStart(2, '0')}"
+            _uiState.value = _uiState.value.copy(
+                amountText = amountText,
+                title = expense.title,
+                merchant = expense.merchant.orEmpty(),
+                note = expense.note.orEmpty(),
+                selectedCategory = category,
+                selectedPaymentMethod = expense.paymentMethod ?: PaymentMethod.Cash,
+                selectedDateText = formatDateLabel(expense.expenseDate),
+                selectedDateEpochDay = expense.expenseDate.toEpochDay(),
+                isRecurring = expense.isRecurringGenerated,
+                isEditing = true,
+                categories = categories,
+            )
         }
     }
 
@@ -119,25 +157,52 @@ class AddExpenseViewModel @Inject constructor(
 
         viewModelScope.launch {
             val now = Instant.now()
-            val expense = Expense(
-                title = title,
-                merchant = state.merchant.ifBlank { null },
-                amount = Money(amountMinor),
-                categoryId = category.id,
-                paymentMethod = state.selectedPaymentMethod,
-                expenseDate = expenseDate,
-                note = state.note.ifBlank { null },
-                isRecurringGenerated = false,
-                recurringRuleId = null,
-                createdAt = now,
-                updatedAt = now,
-            )
-            when (val result = addExpenseUseCase(expense)) {
-                is DomainResult.Success -> {
-                    _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+            val existingId = editingExpenseId
+            if (existingId != null) {
+                val existing = expenseRepository.getExpense(existingId)
+                val expense = Expense(
+                    id = existingId,
+                    title = title,
+                    merchant = state.merchant.ifBlank { null },
+                    amount = Money(amountMinor),
+                    categoryId = category.id,
+                    paymentMethod = state.selectedPaymentMethod,
+                    expenseDate = expenseDate,
+                    note = state.note.ifBlank { null },
+                    isRecurringGenerated = existing?.isRecurringGenerated ?: false,
+                    recurringRuleId = existing?.recurringRuleId,
+                    createdAt = existing?.createdAt ?: now,
+                    updatedAt = now,
+                )
+                when (val result = updateExpenseUseCase(expense)) {
+                    is DomainResult.Success -> {
+                        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+                    }
+                    is DomainResult.Failure -> {
+                        _uiState.value = _uiState.value.copy(isSaving = false, errorMessage = result.error.message)
+                    }
                 }
-                is DomainResult.Failure -> {
-                    _uiState.value = _uiState.value.copy(isSaving = false, errorMessage = result.error.message)
+            } else {
+                val expense = Expense(
+                    title = title,
+                    merchant = state.merchant.ifBlank { null },
+                    amount = Money(amountMinor),
+                    categoryId = category.id,
+                    paymentMethod = state.selectedPaymentMethod,
+                    expenseDate = expenseDate,
+                    note = state.note.ifBlank { null },
+                    isRecurringGenerated = false,
+                    recurringRuleId = null,
+                    createdAt = now,
+                    updatedAt = now,
+                )
+                when (val result = addExpenseUseCase(expense)) {
+                    is DomainResult.Success -> {
+                        _uiState.value = _uiState.value.copy(isSaving = false, saved = true)
+                    }
+                    is DomainResult.Failure -> {
+                        _uiState.value = _uiState.value.copy(isSaving = false, errorMessage = result.error.message)
+                    }
                 }
             }
         }

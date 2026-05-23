@@ -4,10 +4,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.pulsefinance.presentation.analytics.AnalyticsScreen
 import com.pulsefinance.presentation.common.components.PulseBottomBar
 import com.pulsefinance.presentation.dashboard.DashboardScreen
@@ -47,9 +49,19 @@ fun PulseNavGraph() {
                 AnalyticsScreen()
             }
             composable(PulseRoute.Transactions.path) {
-                TransactionsScreen()
+                TransactionsScreen(
+                    onEditExpense = { expenseId ->
+                        navController.navigate(PulseRoute.EditExpense.withId(expenseId))
+                    },
+                )
             }
             composable(PulseRoute.AddExpense.path) {
+                AddExpenseScreen(onBack = { navController.popBackStack() })
+            }
+            composable(
+                route = PulseRoute.EditExpense.path,
+                arguments = listOf(navArgument("expenseId") { type = NavType.LongType }),
+            ) {
                 AddExpenseScreen(onBack = { navController.popBackStack() })
             }
             composable(PulseRoute.Recurring.path) {

@@ -7,7 +7,10 @@ import com.pulsefinance.domain.repository.ExpenseRepository
 import com.pulsefinance.domain.usecase.AddExpenseUseCase
 import com.pulsefinance.domain.usecase.CalculateBudgetProgressUseCase
 import com.pulsefinance.domain.usecase.CategorizeExpenseUseCase
+import com.pulsefinance.domain.usecase.DeleteExpenseUseCase
 import com.pulsefinance.domain.usecase.ObserveDashboardUseCase
+import com.pulsefinance.domain.usecase.ObserveTransactionsUseCase
+import com.pulsefinance.domain.usecase.UpdateExpenseUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -51,6 +54,29 @@ object UseCaseModule {
     ): CategorizeExpenseUseCase = CategorizeExpenseUseCase(
         categoryRepository = categoryRepository,
         keywordRepository = keywordRepository,
+        expenseRepository = expenseRepository,
+    )
+
+    @Provides
+    fun provideObserveTransactions(
+        expenseRepository: ExpenseRepository,
+    ): ObserveTransactionsUseCase = ObserveTransactionsUseCase(
+        expenseRepository = expenseRepository,
+    )
+
+    @Provides
+    fun provideUpdateExpense(
+        expenseRepository: ExpenseRepository,
+        categoryRepository: CategoryRepository,
+    ): UpdateExpenseUseCase = UpdateExpenseUseCase(
+        expenseRepository = expenseRepository,
+        categoryRepository = categoryRepository,
+    )
+
+    @Provides
+    fun provideDeleteExpense(
+        expenseRepository: ExpenseRepository,
+    ): DeleteExpenseUseCase = DeleteExpenseUseCase(
         expenseRepository = expenseRepository,
     )
 }

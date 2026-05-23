@@ -5,6 +5,9 @@ sealed class PulseRoute(val path: String) {
     data object Analytics : PulseRoute("analytics")
     data object Transactions : PulseRoute("transactions")
     data object AddExpense : PulseRoute("add_expense")
+    data object EditExpense : PulseRoute("edit_expense/{expenseId}") {
+        fun withId(expenseId: Long) = "edit_expense/$expenseId"
+    }
     data object Recurring : PulseRoute("recurring")
     data object Settings : PulseRoute("settings")
 }
