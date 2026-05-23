@@ -45,12 +45,13 @@
 
 ## Phase 4 - Data Repositories
 
-- [ ] Implement expense repository
-- [ ] Implement category repository
-- [ ] Implement budget repository
-- [ ] Implement recurring expense repository
-- [ ] Add entity-domain mappers
-- [ ] Ensure all read queries use `Flow` where the UI should update reactively
+- [x] Implement expense repository
+- [x] Implement category repository
+- [x] Implement budget repository
+- [x] Implement recurring expense repository
+- [x] Implement category keyword repository
+- [x] Add entity-domain mappers
+- [x] Ensure all read queries use `Flow` where the UI should update reactively
 
 ## Phase 5 - Dashboard UI
 

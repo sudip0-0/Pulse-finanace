@@ -5,16 +5,18 @@ import com.pulsefinance.domain.model.DomainResult
 import com.pulsefinance.domain.model.Expense
 import com.pulsefinance.domain.repository.CategoryRepository
 import com.pulsefinance.domain.repository.ExpenseRepository
+import java.time.Clock
 
 class UpdateExpenseUseCase(
     private val expenseRepository: ExpenseRepository,
     private val categoryRepository: CategoryRepository,
+    private val clock: Clock = Clock.systemDefaultZone(),
 ) {
     suspend operator fun invoke(expense: Expense): DomainResult<Unit> {
         if (expense.id <= 0) {
             return DomainResult.Failure(DomainError.Validation("Expense id is required."))
         }
-        validateExpense(expense)?.let { return DomainResult.Failure(it) }
+        validateExpense(expense, clock)?.let { return DomainResult.Failure(it) }
         if (expenseRepository.getExpense(expense.id) == null) {
             return DomainResult.Failure(DomainError.NotFound("Expense was not found."))
         }

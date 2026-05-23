@@ -2,9 +2,9 @@
 
 ## Current Status
 
-Status: Phase 3 domain layer implemented
+Status: Phase 4 data repositories implemented
 
-The project now has a buildable Android app foundation, Room local persistence, and a pure Kotlin domain layer for the Nepal-focused Pulse MVP. The domain layer defines finance models, repository contracts, deterministic categorization, budget calculations, recurring generation, transaction observation entry points, and CSV export preparation.
+The project now has a buildable Android app foundation, Room local persistence, a pure Kotlin domain layer, and concrete data repository implementations that bridge Room DAOs to domain repository interfaces. Entity-domain mappers handle Money composition, enum translation, and null-safe payment method mapping. All reactive reads use Flow with IO dispatcher offloading.
 
 ## Completed
 
@@ -45,10 +45,25 @@ The project now has a buildable Android app foundation, Room local persistence, 
 - Added deterministic categorization priority: exact merchant, strong keyword, previous merchant category, weak keyword, Other
 - Added unit tests for money formatting, categorization, budget progress, recurring generation, CSV escaping, and expense validation
 - Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
+- Hardened money formatting to use integer-only formatting and reject unformattable `Long.MIN_VALUE`
+- Improved categorization for merchant suffixes like `Pathao ride` and sort-order tie-breaking without seed-ID priority coupling
+- Added recurring schedule coverage for month-end rules, inactive rules, and end-date boundaries
+- Added future-date and update/delete validation coverage
+- Implemented entity-domain mappers for expenses, categories, budgets, recurring rules, and category keywords
+- Implemented `ExpenseRepositoryImpl` backed by `ExpenseDao` with filtered query support
+- Implemented `CategoryRepositoryImpl` backed by `CategoryDao`
+- Implemented `BudgetRepositoryImpl` backed by `BudgetDao` with upsert logic
+- Implemented `RecurringRuleRepositoryImpl` backed by `RecurringRuleDao`
+- Implemented `CategoryKeywordRepositoryImpl` backed by `CategoryKeywordDao`
+- Added DAO queries for recurring duplicate detection, previous merchant category lookup, and filtered transactions
+- All repository reads use `Flow` with `flowOn(Dispatchers.IO)` for off-main-thread execution
+- All repository writes use `withContext(Dispatchers.IO)` for suspend safety
+- Added mapper round-trip unit tests for all five entity-domain pairs
+- Verified `.\gradlew.bat :app:testDebugUnitTest :app:assembleDebug :app:assembleDebugAndroidTest` succeeds
 
 ## In Progress
 
-- Phase 4 data repository planning
+- Phase 5 dashboard UI planning
 
 ## Not Started
 
@@ -81,10 +96,10 @@ The project now has a buildable Android app foundation, Room local persistence, 
 
 ## Next Recommended Step
 
-Implement the data repository bridge:
+Implement the dashboard UI:
 
-1. Entity-domain mappers
-2. Repository implementations backed by Room DAOs
-3. Dependency injection wiring
-4. Connect Add Expense and Dashboard to real data
-5. ViewModel tests for reactive dashboard updates
+1. Wire repositories through dependency injection (Hilt modules)
+2. Build DashboardViewModel consuming ObserveDashboardUseCase
+3. Connect Compose dashboard screen to real ViewModel state
+4. Add loading and empty states
+5. Verify reactive updates when expenses are added

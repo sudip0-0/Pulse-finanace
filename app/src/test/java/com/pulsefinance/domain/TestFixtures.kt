@@ -97,7 +97,6 @@ internal class FakeCategoryRepository(
 internal class FakeKeywordRepository(
     private val keywords: List<CategoryKeyword>,
 ) : CategoryKeywordRepository {
-    override fun observeKeywords(): Flow<List<CategoryKeyword>> = MutableStateFlow(keywords)
     override suspend fun getKeywords(): List<CategoryKeyword> = keywords
 }
 

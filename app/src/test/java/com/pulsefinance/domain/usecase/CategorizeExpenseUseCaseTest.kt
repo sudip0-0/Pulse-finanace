@@ -36,6 +36,19 @@ class CategorizeExpenseUseCaseTest {
     }
 
     @Test
+    fun merchantKeywordMatchesSuffixText() = runBlocking {
+        val useCase = useCase(
+            keywords = listOf(CategoryKeyword(1, 3, "pathao", KeywordMatchType.Merchant, 100)),
+        )
+
+        val result = useCase(CategorizationInput(title = "Ride", merchant = "Pathao ride"))
+
+        val value = (result as DomainResult.Success).value
+        assertEquals("Transport", value.category.name)
+        assertEquals(CategorizationReason.ExactMerchant, value.reason)
+    }
+
+    @Test
     fun weightedKeywordMatchHandlesPunctuationAndCase() = runBlocking {
         val useCase = useCase(
             keywords = listOf(
@@ -90,6 +103,19 @@ class CategorizeExpenseUseCaseTest {
         val value = (result as DomainResult.Success).value
         assertEquals("Other", value.category.name)
         assertEquals(CategorizationReason.FallbackOther, value.reason)
+    }
+
+    @Test
+    fun equalKeywordWeightUsesCategorySortOrderTieBreak() = runBlocking {
+        val result = useCase(
+            listOf(
+                CategoryKeyword(1, 2, "market", KeywordMatchType.Keyword, 80),
+                CategoryKeyword(2, 1, "market", KeywordMatchType.Keyword, 80),
+            ),
+        )(CategorizationInput(title = "market", merchant = null))
+
+        val value = (result as DomainResult.Success).value
+        assertEquals("Food & Dining", value.category.name)
     }
 
     private fun useCase(keywords: List<CategoryKeyword>): CategorizeExpenseUseCase {

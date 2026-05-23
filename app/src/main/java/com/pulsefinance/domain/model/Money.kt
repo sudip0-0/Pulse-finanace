@@ -1,10 +1,5 @@
 package com.pulsefinance.domain.model
 
-import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
-import java.util.Locale
-import kotlin.math.abs
-
 data class Money(
     val amountMinor: Long,
     val currencyCode: String = DEFAULT_CURRENCY,
@@ -31,11 +26,11 @@ data class Money(
     fun isPositive(): Boolean = amountMinor > 0
 
     fun format(): String {
-        val symbols = DecimalFormatSymbols(Locale.US)
-        val formatter = DecimalFormat("#,##0.00", symbols)
-        val major = abs(amountMinor) / MINOR_UNITS_PER_MAJOR
-        val minor = abs(amountMinor) % MINOR_UNITS_PER_MAJOR
-        val formatted = formatter.format(major + minor.toDouble() / MINOR_UNITS_PER_MAJOR)
+        require(amountMinor != Long.MIN_VALUE) { "Money amount is too small to format safely." }
+        val absoluteMinor = if (amountMinor < 0) -amountMinor else amountMinor
+        val major = absoluteMinor / MINOR_UNITS_PER_MAJOR
+        val minor = absoluteMinor % MINOR_UNITS_PER_MAJOR
+        val formatted = "${major.withGrouping()}." + minor.toString().padStart(2, '0')
         val sign = if (amountMinor < 0) "-" else ""
         return "$sign$currencyCode $formatted"
     }
@@ -50,4 +45,13 @@ data class Money(
 
         fun zero(currencyCode: String = DEFAULT_CURRENCY): Money = Money(0, currencyCode)
     }
+}
+
+private fun Long.withGrouping(): String {
+    val digits = toString()
+    return digits
+        .reversed()
+        .chunked(3)
+        .joinToString(",")
+        .reversed()
 }

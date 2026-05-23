@@ -70,8 +70,8 @@ class CategorizeExpenseUseCase(
     ): CategorizationResult? {
         if (merchantText.isBlank()) return null
         return keywords
-            .filter { it.matchType == KeywordMatchType.Merchant && TextNormalizer.normalize(it.keyword) == merchantText }
-            .maxWithOrNull(compareBy<CategoryKeyword> { it.weight }.thenByDescending { categoryPriority(it.categoryId) })
+            .filter { it.matchType == KeywordMatchType.Merchant && keywordMatches(merchantText, TextNormalizer.normalize(it.keyword)) }
+            .maxWithOrNull(keywordComparator(categoryById))
             ?.let { keyword ->
                 categoryById[keyword.categoryId]?.let { category ->
                     CategorizationResult(category, CategorizationReason.ExactMerchant, keyword.keyword)
@@ -88,7 +88,7 @@ class CategorizeExpenseUseCase(
         if (text.isBlank()) return null
         return keywords
             .filter { keyword -> keyword.weight >= minimumWeight && keywordMatches(text, TextNormalizer.normalize(keyword.keyword)) }
-            .maxWithOrNull(compareBy<CategoryKeyword> { it.weight }.thenByDescending { categoryPriority(it.categoryId) })
+            .maxWithOrNull(keywordComparator(categoryById))
             ?.let { keyword ->
                 categoryById[keyword.categoryId]?.let { category ->
                     CategorizationResult(category, CategorizationReason.Keyword, keyword.keyword)
@@ -100,8 +100,23 @@ class CategorizeExpenseUseCase(
         return keyword.isNotBlank() && Regex("(^|\\s)${Regex.escape(keyword)}(\\s|$)").containsMatchIn(text)
     }
 
-    private fun categoryPriority(categoryId: Long): Int = CATEGORY_PRIORITY.indexOf(categoryId).let { index ->
-        if (index == -1) Int.MAX_VALUE else -index
+    private fun keywordComparator(categoryById: Map<Long, Category>): Comparator<CategoryKeyword> {
+        return Comparator { left, right ->
+            val weightCompare = left.weight.compareTo(right.weight)
+            if (weightCompare != 0) {
+                weightCompare
+            } else {
+                val leftCategory = categoryById[left.categoryId]
+                val rightCategory = categoryById[right.categoryId]
+                val sortCompare = (rightCategory?.sortOrder ?: Int.MAX_VALUE)
+                    .compareTo(leftCategory?.sortOrder ?: Int.MAX_VALUE)
+                if (sortCompare != 0) {
+                    sortCompare
+                } else {
+                    rightCategory?.name.orEmpty().compareTo(leftCategory?.name.orEmpty())
+                }
+            }
+        }
     }
 
     private suspend fun CategoryRepository.observeCategoriesSnapshot(): List<Category> {
@@ -111,7 +126,6 @@ class CategorizeExpenseUseCase(
     private companion object {
         const val OTHER_CATEGORY = "Other"
         const val STRONG_KEYWORD_WEIGHT = 80
-        val CATEGORY_PRIORITY = listOf(3L, 1L, 2L, 4L, 5L, 6L, 7L, 9L, 8L, 10L, 11L, 13L, 16L)
     }
 }
 

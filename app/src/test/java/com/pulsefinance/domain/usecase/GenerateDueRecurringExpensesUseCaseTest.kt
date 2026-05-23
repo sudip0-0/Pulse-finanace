@@ -40,4 +40,44 @@ class GenerateDueRecurringExpensesUseCaseTest {
         val ids = (result as DomainResult.Success).value
         assertEquals(emptyList<Long>(), ids)
     }
+
+    @Test
+    fun preservesMonthEndRecurringSchedule() = runBlocking {
+        val rule = recurringRule(
+            nextDueDate = LocalDate.of(2026, 1, 31),
+            startDate = LocalDate.of(2026, 1, 31),
+        )
+
+        assertEquals(LocalDate.of(2026, 2, 28), rule.nextDateAfter(LocalDate.of(2026, 1, 31)))
+        assertEquals(LocalDate.of(2026, 3, 31), rule.nextDateAfter(LocalDate.of(2026, 2, 28)))
+    }
+
+    @Test
+    fun inactiveRulesAreNotGeneratedByRepositoryContract() = runBlocking {
+        val expenseRepository = FakeExpenseRepository()
+        val recurringRepository = FakeRecurringRuleRepository(listOf(recurringRule().copy(isActive = false)))
+        val useCase = GenerateDueRecurringExpensesUseCase(recurringRepository, expenseRepository, clock)
+
+        val result = useCase(LocalDate.of(2026, 5, 23))
+
+        val ids = (result as DomainResult.Success).value
+        assertEquals(emptyList<Long>(), ids)
+    }
+
+    @Test
+    fun endDateBoundaryGeneratesDueDateOnEndDate() = runBlocking {
+        val expenseRepository = FakeExpenseRepository()
+        val recurringRepository = FakeRecurringRuleRepository(
+            listOf(
+                recurringRule(nextDueDate = LocalDate.of(2026, 5, 1))
+                    .copy(endDate = LocalDate.of(2026, 5, 1)),
+            ),
+        )
+        val useCase = GenerateDueRecurringExpensesUseCase(recurringRepository, expenseRepository, clock)
+
+        val result = useCase(LocalDate.of(2026, 5, 23))
+
+        val ids = (result as DomainResult.Success).value
+        assertEquals(1, ids.size)
+    }
 }

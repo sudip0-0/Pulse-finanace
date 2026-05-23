@@ -31,11 +31,31 @@ data class RecurringRule(
     fun nextDateAfter(date: LocalDate): LocalDate {
         return when (frequency) {
             RecurringFrequency.Weekly -> date.plusWeeks(interval.toLong())
-            RecurringFrequency.Monthly -> date.plusMonths(interval.toLong())
-            RecurringFrequency.Yearly -> date.plusYears(interval.toLong())
+            RecurringFrequency.Monthly -> nextMonthlyDateAfter(date)
+            RecurringFrequency.Yearly -> nextYearlyDateAfter(date)
+        }
+    }
+
+    private fun nextMonthlyDateAfter(date: LocalDate): LocalDate {
+        val nextMonth = date.plusMonths(interval.toLong())
+        return if (startDate.isLastDayOfMonth()) {
+            nextMonth.withDayOfMonth(nextMonth.lengthOfMonth())
+        } else {
+            nextMonth
+        }
+    }
+
+    private fun nextYearlyDateAfter(date: LocalDate): LocalDate {
+        val nextYear = date.plusYears(interval.toLong())
+        return if (startDate.monthValue == 2 && startDate.dayOfMonth == 29 && !nextYear.isLeapYear) {
+            nextYear.withDayOfMonth(28)
+        } else {
+            nextYear
         }
     }
 }
+
+private fun LocalDate.isLastDayOfMonth(): Boolean = dayOfMonth == lengthOfMonth()
 
 enum class RecurringFrequency {
     Weekly,

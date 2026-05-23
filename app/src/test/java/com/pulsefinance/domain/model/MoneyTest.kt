@@ -10,6 +10,21 @@ class MoneyTest {
     }
 
     @Test
+    fun formatsNegativeMinorUnitsWithoutFloatingPointMath() {
+        assertEquals("-NPR 2,418.05", Money(-241805).format())
+    }
+
+    @Test
+    fun formatsLargeMinorUnitsPredictably() {
+        assertEquals("NPR 92,233,720,368,547,758.07", Money(Long.MAX_VALUE).format())
+    }
+
+    @Test(expected = IllegalArgumentException::class)
+    fun rejectsLongMinValueFormatting() {
+        Money(Long.MIN_VALUE).format()
+    }
+
+    @Test
     fun addsOnlyMatchingCurrencies() {
         assertEquals(Money(300), Money(100) + Money(200))
     }

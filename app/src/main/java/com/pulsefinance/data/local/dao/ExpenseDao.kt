@@ -96,4 +96,42 @@ interface ExpenseDao {
         startDate: LocalDate,
         endDate: LocalDate,
     ): List<CategorySpendRow>
+
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1 FROM expenses
+            WHERE recurring_rule_id = :ruleId AND expense_date = :date
+            LIMIT 1
+        )
+        """,
+    )
+    suspend fun hasGeneratedExpenseForRule(ruleId: Long, date: LocalDate): Boolean
+
+    @Query(
+        """
+        SELECT category_id FROM expenses
+        WHERE merchant = :merchant
+        ORDER BY expense_date DESC, created_at DESC
+        LIMIT 1
+        """,
+    )
+    suspend fun findPreviousCategoryIdForMerchant(merchant: String): Long?
+
+    @Query(
+        """
+        SELECT * FROM expenses
+        WHERE (:startDate IS NULL OR expense_date >= :startDate)
+          AND (:endDate IS NULL OR expense_date <= :endDate)
+          AND (:categoryId IS NULL OR category_id = :categoryId)
+          AND (:searchQuery IS NULL OR title LIKE '%' || :searchQuery || '%' OR merchant LIKE '%' || :searchQuery || '%')
+        ORDER BY expense_date DESC, created_at DESC
+        """,
+    )
+    fun observeFilteredExpenses(
+        startDate: LocalDate?,
+        endDate: LocalDate?,
+        categoryId: Long?,
+        searchQuery: String?,
+    ): Flow<List<ExpenseEntity>>
 }

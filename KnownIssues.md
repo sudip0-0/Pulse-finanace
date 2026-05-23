@@ -104,19 +104,20 @@ Potential resolution:
 
 ## Technical Risks
 
-## Domain Repositories Are Contracts Only
+## Domain Repositories Are Now Implemented
 
-The Phase 3 domain layer defines repository interfaces and use cases, but the Room-backed repository implementations are still planned for Phase 4.
+The Phase 4 data layer provides concrete repository implementations backed by Room DAOs.
 
 Impact:
 
 - Domain rules are testable with fakes.
-- UI screens still do not read or write real persisted data.
+- Repository implementations are ready for ViewModel wiring.
+- UI screens still do not read or write real persisted data until DI is wired.
 
-Potential resolution:
+Remaining:
 
-- Implement entity-domain mappers and repository classes in the data layer.
-- Wire repositories through dependency injection before connecting ViewModels.
+- Wire repositories through Hilt dependency injection.
+- Connect ViewModels to real repository instances.
 
 ## Chart Rendering Complexity
 
@@ -197,6 +198,11 @@ Potential resolution:
 - Store `recurringRuleId` on generated expenses.
 - Check whether a rule already generated an expense for a due period.
 - Add unit tests for missed and repeated due dates.
+
+Current state:
+
+- Domain generation checks for an existing generated expense before creating one.
+- Full atomic duplicate prevention still belongs in the Room-backed repository transaction or a persistence constraint in Phase 4.
 
 ## UI Risks
 
