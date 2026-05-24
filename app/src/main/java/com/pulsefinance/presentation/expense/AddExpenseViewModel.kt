@@ -91,7 +91,6 @@ class AddExpenseViewModel @Inject constructor(
                 selectedPaymentMethod = expense.paymentMethod ?: PaymentMethod.Cash,
                 selectedDateText = formatDateLabel(expense.expenseDate),
                 selectedDateEpochDay = expense.expenseDate.toEpochDay(),
-                isRecurring = expense.isRecurringGenerated,
                 isEditing = true,
                 categories = categories,
             )
@@ -135,10 +134,6 @@ class AddExpenseViewModel @Inject constructor(
         val date = LocalDate.ofEpochDay(epochDay)
         val label = formatDateLabel(date)
         _uiState.value = _uiState.value.copy(selectedDateText = label, selectedDateEpochDay = epochDay, errorMessage = null)
-    }
-
-    fun onRecurringToggled(enabled: Boolean) {
-        _uiState.value = _uiState.value.copy(isRecurring = enabled)
     }
 
     fun onAcceptSuggestion() {

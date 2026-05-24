@@ -18,7 +18,7 @@ class ExportTransactionsCsvUseCase(
                     expense.title,
                     expense.merchant.orEmpty(),
                     category?.name.orEmpty(),
-                    expense.amount.format(),
+                    formatAmountForCsv(expense.amount.amountMinor),
                     expense.amount.currencyCode,
                     expense.paymentMethod?.name.orEmpty(),
                     expense.note.orEmpty(),
@@ -29,6 +29,14 @@ class ExportTransactionsCsvUseCase(
         } catch (error: Throwable) {
             DomainResult.Failure(DomainError.Repository("Could not export transactions.", error))
         }
+    }
+
+    private fun formatAmountForCsv(amountMinor: Long): String {
+        val sign = if (amountMinor < 0) "-" else ""
+        val absMinor = if (amountMinor < 0) -amountMinor else amountMinor
+        val major = absMinor / 100
+        val minor = absMinor % 100
+        return "$sign$major.${minor.toString().padStart(2, '0')}"
     }
 
     private fun String.csvEscaped(): String {

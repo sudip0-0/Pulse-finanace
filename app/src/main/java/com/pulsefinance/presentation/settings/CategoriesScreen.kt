@@ -8,11 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -22,7 +19,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -94,20 +90,11 @@ fun CategoriesScreen(
             contentPadding = androidx.compose.foundation.layout.PaddingValues(
                 start = PulseSpacing.xl,
                 end = PulseSpacing.xl,
+                top = PulseSpacing.sm,
                 bottom = PulseSpacing.xl,
             ),
             verticalArrangement = Arrangement.spacedBy(PulseSpacing.sm),
         ) {
-            item {
-                Button(
-                    onClick = viewModel::onAddCategoryClick,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = null)
-                    Text("Add category")
-                }
-            }
-
             if (state.errorMessage != null && !state.showEditor) {
                 item {
                     Text(

@@ -90,7 +90,7 @@ class ExportTransactionsCsvUseCaseTest {
     }
 
     @Test
-    fun amountFormattedWithNprSymbol() = runBlocking {
+    fun amountFormattedAsPlainNumberAndCurrencyColumnSeparate() = runBlocking {
         val result = useCase(
             listOf(
                 expense(title = "Lunch", amountMinor = 45050),
@@ -98,8 +98,12 @@ class ExportTransactionsCsvUseCaseTest {
         )
 
         val csv = (result as DomainResult.Success).value
-        assertTrue(csv.contains("रू 450.50"))
-        assertTrue(csv.contains("NPR"))
+        val dataRow = csv.lines()[1]
+        val fields = parseCsvRow(dataRow)
+        // Amount column is a plain number (no currency symbol or thousands separator)
+        // so spreadsheets can parse it as numeric.
+        assertEquals("450.50", fields[4])
+        assertEquals("NPR", fields[5])
     }
 
     @Test

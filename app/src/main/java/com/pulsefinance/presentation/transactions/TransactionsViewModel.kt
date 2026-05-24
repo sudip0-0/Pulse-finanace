@@ -59,8 +59,8 @@ class TransactionsViewModel @Inject constructor(
             val resorted = when (sort) {
                 TransactionSort.DateDesc -> current.transactions.sortedByDescending { it.expenseDateEpochDay }
                 TransactionSort.DateAsc -> current.transactions.sortedBy { it.expenseDateEpochDay }
-                TransactionSort.AmountDesc -> current.transactions.sortedByDescending { parseAmountForSort(it.amount) }
-                TransactionSort.AmountAsc -> current.transactions.sortedBy { parseAmountForSort(it.amount) }
+                TransactionSort.AmountDesc -> current.transactions.sortedByDescending { it.amountMinor }
+                TransactionSort.AmountAsc -> current.transactions.sortedBy { it.amountMinor }
             }
             _uiState.value = _uiState.value.copy(transactions = resorted)
         }
@@ -159,6 +159,7 @@ class TransactionsViewModel @Inject constructor(
             categoryName = category?.name ?: "Unknown",
             categoryColorHex = category?.colorHex ?: "#9CA3AF",
             amount = "-${amount.format()}",
+            amountMinor = amount.amountMinor,
             dateLabel = formatDateLabel(expenseDate),
             expenseDateEpochDay = expenseDate.toEpochDay(),
         )
@@ -179,10 +180,4 @@ class TransactionsViewModel @Inject constructor(
         private val SHORT_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d")
         private val FULL_DATE_FORMAT = DateTimeFormatter.ofPattern("MMM d, yyyy")
     }
-}
-
-private fun parseAmountForSort(formattedAmount: String): Long {
-    // Extract digits from formatted amount like "-रू 1,250.00"
-    val digits = formattedAmount.filter { it.isDigit() || it == '.' }
-    return digits.replace(".", "").toLongOrNull() ?: 0L
 }

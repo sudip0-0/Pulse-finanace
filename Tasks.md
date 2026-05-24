@@ -108,8 +108,7 @@
 ## Phase 8 - Analytics UI
 
 - [x] Build analytics top app bar
-- [x] Build period picker (This week, This month, Last month)
-- [x] Build Spending/Budget segmented control
+- [x] Build period picker (This month, Last month)
 - [x] Implement donut chart with Compose Canvas
 - [x] Build category legend with color, name, amount, and percentage
 - [x] Build recent transactions section

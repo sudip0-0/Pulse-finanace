@@ -300,11 +300,16 @@ private fun CategorySpendRow(
 
 @Composable
 private fun TransactionItem(transaction: TransactionUiModel) {
+    val accentColor = if (transaction.colorHex.isNotBlank()) parseColor(transaction.colorHex) else PulseColors.Primary
+    val subtitle = listOfNotNull(
+        transaction.category.takeIf { it.isNotBlank() },
+        transaction.dateLabel,
+    ).joinToString(" · ")
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {
-                contentDescription = "${transaction.merchant}, ${transaction.amount}, ${transaction.dateLabel}"
+                contentDescription = "${transaction.merchant}, ${transaction.category}, ${transaction.amount}, ${transaction.dateLabel}"
             },
         horizontalArrangement = Arrangement.spacedBy(PulseSpacing.md),
         verticalAlignment = Alignment.CenterVertically,
@@ -313,19 +318,19 @@ private fun TransactionItem(transaction: TransactionUiModel) {
             modifier = Modifier
                 .size(44.dp)
                 .clip(CircleShape)
-                .background(PulseColors.SurfaceHigh),
+                .background(accentColor.copy(alpha = 0.18f)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = transaction.merchant.first().uppercase(),
-                color = PulseColors.Primary,
+                color = accentColor,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = transaction.merchant, style = MaterialTheme.typography.titleMedium)
             Text(
-                text = transaction.dateLabel,
+                text = subtitle,
                 color = PulseColors.TextSecondary,
                 style = MaterialTheme.typography.bodyMedium,
             )

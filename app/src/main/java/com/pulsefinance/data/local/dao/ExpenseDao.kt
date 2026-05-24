@@ -1,7 +1,6 @@
 package com.pulsefinance.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -21,9 +20,6 @@ interface ExpenseDao {
     @Update
     suspend fun update(expense: ExpenseEntity)
 
-    @Delete
-    suspend fun delete(expense: ExpenseEntity)
-
     @Query("DELETE FROM expenses WHERE id = :expenseId")
     suspend fun deleteById(expenseId: Long)
 
@@ -38,15 +34,6 @@ interface ExpenseDao {
         """,
     )
     fun observeExpensesBetween(startDate: LocalDate, endDate: LocalDate): Flow<List<ExpenseEntity>>
-
-    @Query(
-        """
-        SELECT * FROM expenses
-        WHERE expense_date BETWEEN :startDate AND :endDate
-        ORDER BY expense_date DESC, created_at DESC
-        """,
-    )
-    suspend fun getExpensesBetween(startDate: LocalDate, endDate: LocalDate): List<ExpenseEntity>
 
     @Query(
         """
@@ -79,26 +66,6 @@ interface ExpenseDao {
 
     @Query(
         """
-        SELECT
-            c.id AS category_id,
-            c.name AS category_name,
-            c.color_hex AS color_hex,
-            SUM(e.amount_minor) AS amount_minor,
-            COUNT(e.id) AS transaction_count
-        FROM expenses e
-        INNER JOIN categories c ON c.id = e.category_id
-        WHERE e.expense_date BETWEEN :startDate AND :endDate
-        GROUP BY c.id, c.name, c.color_hex
-        ORDER BY amount_minor DESC
-        """,
-    )
-    suspend fun getCategorySpendingBetween(
-        startDate: LocalDate,
-        endDate: LocalDate,
-    ): List<CategorySpendRow>
-
-    @Query(
-        """
         SELECT EXISTS(
             SELECT 1 FROM expenses
             WHERE recurring_rule_id = :ruleId AND expense_date = :date
@@ -111,7 +78,7 @@ interface ExpenseDao {
     @Query(
         """
         SELECT category_id FROM expenses
-        WHERE merchant = :merchant
+        WHERE LOWER(merchant) = LOWER(:merchant)
         ORDER BY expense_date DESC, created_at DESC
         LIMIT 1
         """,

@@ -18,13 +18,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -88,13 +85,13 @@ fun AnalyticsScreen(
                 )
             }
         } else {
-            AnalyticsContent(state = state, onTabSelected = viewModel::onTabSelected)
+            AnalyticsContent(state = state)
         }
     }
 }
 
 @Composable
-private fun AnalyticsContent(state: AnalyticsUiState, onTabSelected: (AnalyticsTab) -> Unit) {
+private fun AnalyticsContent(state: AnalyticsUiState) {
     LazyColumn(
         contentPadding = PaddingValues(
             start = PulseSpacing.xl,
@@ -103,9 +100,6 @@ private fun AnalyticsContent(state: AnalyticsUiState, onTabSelected: (AnalyticsT
         ),
         verticalArrangement = Arrangement.spacedBy(PulseSpacing.lg),
     ) {
-        // Segmented control
-        item { SegmentedControl(selectedTab = state.selectedTab, onTabSelected = onTabSelected) }
-
         // Donut chart
         item {
             DonutChart(
@@ -129,33 +123,6 @@ private fun AnalyticsContent(state: AnalyticsUiState, onTabSelected: (AnalyticsT
             items(state.recentTransactions, key = { "txn_${it.id}" }) { transaction ->
                 RecentTransactionRow(transaction = transaction)
             }
-        }
-    }
-}
-
-@Composable
-private fun SegmentedControl(selectedTab: AnalyticsTab, onTabSelected: (AnalyticsTab) -> Unit) {
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(PulseSpacing.xs),
-        modifier = Modifier
-            .clip(RoundedCornerShape(22.dp))
-            .background(PulseColors.SurfaceHigh)
-            .padding(PulseSpacing.xxs),
-    ) {
-        AnalyticsTab.entries.forEach { tab ->
-            val selected = selectedTab == tab
-            FilterChip(
-                selected = selected,
-                onClick = { onTabSelected(tab) },
-                label = { Text(text = tab.name) },
-                colors = FilterChipDefaults.filterChipColors(
-                    selectedContainerColor = PulseColors.TextPrimary,
-                    selectedLabelColor = PulseColors.Background,
-                    containerColor = Color.Transparent,
-                    labelColor = PulseColors.TextMuted,
-                ),
-                border = null,
-            )
         }
     }
 }
@@ -247,11 +214,16 @@ private fun LegendRow(item: CategoryBreakdownItem) {
 
 @Composable
 private fun RecentTransactionRow(transaction: AnalyticsTransactionItem) {
+    val accentColor = if (transaction.categoryColorHex.isNotBlank()) parseColor(transaction.categoryColorHex) else PulseColors.Primary
+    val subtitle = listOfNotNull(
+        transaction.categoryName.takeIf { it.isNotBlank() },
+        transaction.dateLabel,
+    ).joinToString(" · ")
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .semantics(mergeDescendants = true) {
-                contentDescription = "${transaction.merchant}, ${transaction.amount}, ${transaction.dateLabel}"
+                contentDescription = "${transaction.merchant}, ${transaction.categoryName}, ${transaction.amount}, ${transaction.dateLabel}"
             },
         horizontalArrangement = Arrangement.spacedBy(PulseSpacing.md),
         verticalAlignment = Alignment.CenterVertically,
@@ -260,18 +232,18 @@ private fun RecentTransactionRow(transaction: AnalyticsTransactionItem) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(CircleShape)
-                .background(PulseColors.SurfaceHigh),
+                .background(accentColor.copy(alpha = 0.18f)),
             contentAlignment = Alignment.Center,
         ) {
             Text(
                 text = transaction.merchant.first().uppercase(),
-                color = PulseColors.Primary,
+                color = accentColor,
                 style = MaterialTheme.typography.titleMedium,
             )
         }
         Column(modifier = Modifier.weight(1f)) {
             Text(text = transaction.merchant, style = MaterialTheme.typography.titleMedium)
-            Text(text = transaction.dateLabel, color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyMedium)
+            Text(text = subtitle, color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyMedium)
         }
         Text(text = transaction.amount, style = MaterialTheme.typography.titleMedium)
     }

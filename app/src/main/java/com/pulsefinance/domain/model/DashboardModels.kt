@@ -34,6 +34,7 @@ data class DashboardSnapshot(
     val budgetProgress: BudgetProgress?,
     val categorySpending: List<CategorySpend>,
     val recentTransactions: List<Expense>,
+    val categories: List<Category> = emptyList(),
 )
 
 data class TransactionFilters(

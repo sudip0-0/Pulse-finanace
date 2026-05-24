@@ -33,8 +33,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Switch
-import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
@@ -240,7 +238,7 @@ fun AddExpenseScreen(
                     confirmButton = {
                         TextButton(onClick = {
                             datePickerState.selectedDateMillis?.let { millis ->
-                                val epochDay = millis / 86_400_000L
+                                val epochDay = millisToEpochDay(millis)
                                 viewModel.onDateSelected(epochDay)
                             }
                             showDatePicker = false
@@ -264,27 +262,6 @@ fun AddExpenseScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = pulseTextFieldColors(),
             )
-
-            // Recurring toggle
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-            ) {
-                Text(text = "Recurring expense", style = MaterialTheme.typography.titleMedium)
-                Switch(
-                    checked = state.isRecurring,
-                    onCheckedChange = viewModel::onRecurringToggled,
-                    colors = SwitchDefaults.colors(checkedTrackColor = PulseColors.Primary),
-                )
-            }
-            if (state.isRecurring) {
-                Text(
-                    text = "Recurring schedule will be configured after save (coming in a future update).",
-                    color = PulseColors.TextMuted,
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-            }
 
             // Error message
             if (state.errorMessage != null) {
@@ -353,3 +330,11 @@ private fun parseColor(hex: String): Color {
         PulseColors.Other
     }
 }
+
+// Material3 DatePicker reports the selected day as midnight UTC. Convert through UTC
+// so the user sees the calendar date they actually tapped, regardless of device timezone.
+private fun millisToEpochDay(utcMillis: Long): Long =
+    java.time.Instant.ofEpochMilli(utcMillis)
+        .atZone(java.time.ZoneOffset.UTC)
+        .toLocalDate()
+        .toEpochDay()

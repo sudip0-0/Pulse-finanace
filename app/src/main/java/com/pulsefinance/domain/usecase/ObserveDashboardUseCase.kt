@@ -54,6 +54,7 @@ class ObserveDashboardUseCase(
                 budgetProgress = progress,
                 categorySpending = categorySpend,
                 recentTransactions = recentExpenses,
+                categories = categories,
             )
         }
     }

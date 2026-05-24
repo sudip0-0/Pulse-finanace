@@ -61,6 +61,7 @@ class DashboardViewModel @Inject constructor(
 
     private fun DashboardSnapshot.toUiState(): DashboardUiState {
         val totalMinor = monthlySpend.amountMinor
+        val categoriesById = categories.associateBy { it.id }
         return DashboardUiState(
             isLoading = false,
             errorMessage = null,
@@ -68,7 +69,7 @@ class DashboardViewModel @Inject constructor(
             monthlySpend = monthlySpend.format(),
             budgetState = budgetProgress?.toUiState(),
             categorySpending = categorySpending.take(TOP_CATEGORIES).map { it.toUiModel(totalMinor) },
-            recentTransactions = recentTransactions.map { it.toUiModel() },
+            recentTransactions = recentTransactions.map { it.toUiModel(categoriesById) },
             quickAddItems = QUICK_ADD_ITEMS,
         )
     }
@@ -84,14 +85,15 @@ class DashboardViewModel @Inject constructor(
         )
     }
 
-    private fun Expense.toUiModel(): TransactionUiModel {
+    private fun Expense.toUiModel(categoriesById: Map<Long, com.pulsefinance.domain.model.Category>): TransactionUiModel {
+        val category = categoriesById[categoryId]
         return TransactionUiModel(
             id = id,
             merchant = merchant ?: title,
-            category = "",
+            category = category?.name.orEmpty(),
             amount = "-${amount.format()}",
             dateLabel = formatDateLabel(expenseDate),
-            colorHex = "",
+            colorHex = category?.colorHex.orEmpty(),
         )
     }
 

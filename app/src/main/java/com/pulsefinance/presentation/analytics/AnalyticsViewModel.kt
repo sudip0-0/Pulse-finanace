@@ -39,10 +39,6 @@ class AnalyticsViewModel @Inject constructor(
         observePeriod(period)
     }
 
-    fun onTabSelected(tab: AnalyticsTab) {
-        _uiState.value = _uiState.value.copy(selectedTab = tab)
-    }
-
     private fun observePeriod(period: AnalyticsPeriod) {
         observeJob?.cancel()
         val month = when (period) {
@@ -67,14 +63,14 @@ class AnalyticsViewModel @Inject constructor(
         val availableSweep = (360f - totalGap).coerceAtLeast(0f)
         val breakdown = categorySpending.map { it.toBreakdownItem(totalMinor, availableSweep) }
         val accessibilitySummary = buildAccessibilitySummary(monthlySpend, breakdown)
+        val categoriesById = categories.associateBy { it.id }
 
         return AnalyticsUiState(
             isLoading = false,
             periodLabel = period.label,
-            selectedTab = _uiState.value.selectedTab,
             totalSpend = monthlySpend.format(),
             categoryBreakdown = breakdown,
-            recentTransactions = recentTransactions.map { it.toTransactionItem() },
+            recentTransactions = recentTransactions.map { it.toTransactionItem(categoriesById) },
             chartAccessibilitySummary = accessibilitySummary,
         )
     }
@@ -92,12 +88,13 @@ class AnalyticsViewModel @Inject constructor(
         )
     }
 
-    private fun Expense.toTransactionItem(): AnalyticsTransactionItem {
+    private fun Expense.toTransactionItem(categoriesById: Map<Long, com.pulsefinance.domain.model.Category>): AnalyticsTransactionItem {
+        val category = categoriesById[categoryId]
         return AnalyticsTransactionItem(
             id = id,
             merchant = merchant ?: title,
-            categoryName = "",
-            categoryColorHex = "",
+            categoryName = category?.name ?: "",
+            categoryColorHex = category?.colorHex ?: "",
             amount = "-${amount.format()}",
             dateLabel = formatDateLabel(expenseDate),
         )

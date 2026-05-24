@@ -15,7 +15,6 @@ data class AddExpenseUiState(
     val selectedPaymentMethod: PaymentMethod = PaymentMethod.Cash,
     val selectedDateText: String = "Today",
     val selectedDateEpochDay: Long? = null,
-    val isRecurring: Boolean = false,
     val isEditing: Boolean = false,
     val isSaving: Boolean = false,
     val errorMessage: String? = null,

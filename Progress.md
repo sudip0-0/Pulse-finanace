@@ -167,6 +167,24 @@ The project now has 156 unit tests covering all critical finance, categorization
 - Added a Compose add-expense UI test covering dashboard -> add expense -> save -> dashboard refresh from persisted data
 - Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds with 156 JVM unit tests
 - Verified `.\gradlew.bat :app:assembleDebugAndroidTest` succeeds with the new Compose UI test compiled
+- Senior code review pass (no behaviour changes besides those listed below):
+  - Fixed CSV `Amount` column to write a plain numeric value (`450.50`) instead of the formatted display string (`रू 450.50`); the `Currency` column already covered `NPR`. Spreadsheets can now parse the column as a number.
+  - Fixed Material3 DatePicker timezone handling on AddExpense and AddRecurringRule: convert UTC midnight millis through `ZoneOffset.UTC` to a `LocalDate` rather than dividing by 86_400_000L. Eliminates a possible day shift around midnight UTC.
+  - Made `ExpenseDao.findPreviousCategoryIdForMerchant` case-insensitive (`LOWER(merchant) = LOWER(...)`), so re-using the same merchant typed in a different case keeps the previous category.
+  - Switched `TransactionsViewModel` amount sort to use the underlying `amountMinor` field instead of parsing the formatted display string.
+  - Populated category name and color on dashboard and analytics recent transaction rows (previously sent as empty strings); `DashboardSnapshot` now carries the active category list.
+  - Hid the floating bottom navigation on modal screens (Add/Edit Expense, Add/Edit Recurring, Categories) so the surface is no longer rendered with no item selected.
+  - Removed the inert `Recurring expense` toggle from Add Expense; recurring rules are managed in Settings → Recurring. `Switch`/`SwitchDefaults` imports and `isRecurring` state dropped accordingly.
+  - Removed the dead `Spending`/`Budget` segmented control from Analytics — only `Spending` was ever rendered and the toggle never branched the UI.
+  - Removed the duplicate `Add category` button from Categories; the TopAppBar `+` action remains the single entry point.
+  - Set `android:allowBackup="false"` in `AndroidManifest.xml`. The MVP is offline and privacy-respecting; the SQLite database should not auto-backup to Google Drive without an explicit opt-in.
+  - Removed unused DAO methods: `ExpenseDao.delete(entity)`, `ExpenseDao.getExpensesBetween` (suspend), `ExpenseDao.getCategorySpendingBetween` (suspend) — only the Flow + `deleteById` versions are used.
+  - Deleted unused presentation code: `presentation/preview/PulsePreviewData.kt` (entire package), `presentation/common/components/TransactionRow.kt`, `presentation/common/components/CategorySpendCard.kt`. Each screen reimplements its own row with category-coloured leading dots and that idiom is more flexible.
+  - Removed seven `.gitkeep` files left over from initial scaffolding alongside real Kotlin sources.
+  - Updated Tasks.md Phase 8 to drop the inaccurate `This week` and Spending/Budget segmented control claims.
+  - Updated `ExportTransactionsCsvUseCaseTest.amountFormattedAsPlainNumberAndCurrencyColumnSeparate` to assert the corrected behaviour.
+- Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds (156 JVM unit tests) after the senior review pass
+- Verified `.\gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest` succeeds after the senior review pass
 
 ## In Progress
 

@@ -3,14 +3,11 @@ package com.pulsefinance.presentation.analytics
 data class AnalyticsUiState(
     val isLoading: Boolean = true,
     val periodLabel: String = "This month",
-    val selectedTab: AnalyticsTab = AnalyticsTab.Spending,
     val totalSpend: String = "",
     val categoryBreakdown: List<CategoryBreakdownItem> = emptyList(),
     val recentTransactions: List<AnalyticsTransactionItem> = emptyList(),
     val chartAccessibilitySummary: String = "",
 )
-
-enum class AnalyticsTab { Spending, Budget }
 
 enum class AnalyticsPeriod(val label: String) {
     ThisMonth("This month"),

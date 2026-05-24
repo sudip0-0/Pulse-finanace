@@ -215,7 +215,7 @@ fun AddRecurringRuleScreen(
                     confirmButton = {
                         TextButton(onClick = {
                             datePickerState.selectedDateMillis?.let { millis ->
-                                viewModel.onStartDateSelected(millis / 86_400_000L)
+                                viewModel.onStartDateSelected(millisToEpochDay(millis))
                             }
                             showStartDatePicker = false
                         }) { Text("OK") }
@@ -252,7 +252,7 @@ fun AddRecurringRuleScreen(
                     confirmButton = {
                         TextButton(onClick = {
                             datePickerState.selectedDateMillis?.let { millis ->
-                                viewModel.onEndDateSelected(millis / 86_400_000L)
+                                viewModel.onEndDateSelected(millisToEpochDay(millis))
                             }
                             showEndDatePicker = false
                         }) { Text("OK") }
@@ -347,3 +347,11 @@ private fun parseColor(hex: String): Color {
         PulseColors.Other
     }
 }
+
+// Material3 DatePicker reports the selected day as midnight UTC. Convert through UTC
+// so the user sees the calendar date they actually tapped, regardless of device timezone.
+private fun millisToEpochDay(utcMillis: Long): Long =
+    java.time.Instant.ofEpochMilli(utcMillis)
+        .atZone(java.time.ZoneOffset.UTC)
+        .toLocalDate()
+        .toEpochDay()

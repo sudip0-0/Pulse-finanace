@@ -26,6 +26,7 @@ data class TransactionItemUiModel(
     val categoryName: String,
     val categoryColorHex: String,
     val amount: String,
+    val amountMinor: Long,
     val dateLabel: String,
     val expenseDateEpochDay: Long,
 )

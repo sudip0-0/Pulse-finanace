@@ -24,19 +24,22 @@ import com.pulsefinance.presentation.transactions.TransactionsScreen
 fun PulseNavGraph() {
     val navController = rememberNavController()
     val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val showBottomBar = currentRoute in BOTTOM_BAR_ROUTES
 
     Scaffold(
         bottomBar = {
-            PulseBottomBar(
-                selectedRoute = currentRoute,
-                onRouteSelected = { route ->
-                    navController.navigate(route.path) {
-                        popUpTo(PulseRoute.Dashboard.path) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-            )
+            if (showBottomBar) {
+                PulseBottomBar(
+                    selectedRoute = currentRoute,
+                    onRouteSelected = { route ->
+                        navController.navigate(route.path) {
+                            popUpTo(PulseRoute.Dashboard.path) { saveState = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    },
+                )
+            }
         },
     ) { innerPadding ->
         NavHost(
@@ -116,3 +119,10 @@ fun PulseNavGraph() {
         }
     }
 }
+
+private val BOTTOM_BAR_ROUTES = setOf(
+    PulseRoute.Dashboard.path,
+    PulseRoute.Analytics.path,
+    PulseRoute.Transactions.path,
+    PulseRoute.Settings.path,
+)
