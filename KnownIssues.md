@@ -284,7 +284,7 @@ Resolution: change `CategoryEntity.id` to `autoGenerate = true` (requires a Room
 
 ### Hardcoded Profile
 
-The dashboard header and Settings profile block are hardcoded to `Aayush Shrestha` / `aayush@pulse.local`. For an MVP that is fine; for a portfolio piece a `User` record (name, optional photo) stored locally would feel more polished.
+The dashboard header and Settings profile block are hardcoded to `Sudip Shrestha` / `Sudip@pulse.local`. For an MVP that is fine; for a portfolio piece a `User` record (name, optional photo) stored locally would feel more polished.
 
 ### Currency Row Looks Tappable But Is Not
 

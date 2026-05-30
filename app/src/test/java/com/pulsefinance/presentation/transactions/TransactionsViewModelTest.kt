@@ -31,9 +31,9 @@ class TransactionsViewModelTest {
         category(3, "Transport"),
     )
     private val expenses = listOf(
-        expense(id = 1, title = "Pathao ride", merchant = "Pathao", categoryId = 3, date = LocalDate.of(2026, 5, 23)),
-        expense(id = 2, title = "Lunch momo", merchant = "Local shop", categoryId = 1, date = LocalDate.of(2026, 5, 22)),
-        expense(id = 3, title = "Daraz order", merchant = "Daraz", categoryId = 3, date = LocalDate.of(2026, 5, 21)),
+        expense(id = 1, title = "Pathao ride", merchant = "Pathao", amountMinor = 28000, categoryId = 3, date = LocalDate.of(2026, 5, 23)),
+        expense(id = 2, title = "Lunch momo", merchant = "Local shop", amountMinor = 45000, categoryId = 1, date = LocalDate.of(2026, 5, 22)),
+        expense(id = 3, title = "Daraz order", merchant = "Daraz", amountMinor = 120000, categoryId = 3, date = LocalDate.of(2026, 5, 21)),
     )
 
     @Before
@@ -76,6 +76,18 @@ class TransactionsViewModelTest {
 
         assertEquals(1, vm.uiState.value.transactions.size)
         assertEquals("Pathao", vm.uiState.value.transactions[0].merchant)
+    }
+
+    @Test
+    fun `search filters transactions by amount`() = runTest {
+        val vm = createViewModel()
+        advanceUntilIdle()
+
+        vm.onSearchChanged("450")
+        advanceUntilIdle()
+
+        assertEquals(1, vm.uiState.value.transactions.size)
+        assertEquals("Lunch momo", vm.uiState.value.transactions[0].title)
     }
 
     @Test

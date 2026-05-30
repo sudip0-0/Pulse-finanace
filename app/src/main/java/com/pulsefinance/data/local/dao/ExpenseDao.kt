@@ -91,7 +91,17 @@ interface ExpenseDao {
         WHERE (:startDate IS NULL OR expense_date >= :startDate)
           AND (:endDate IS NULL OR expense_date <= :endDate)
           AND (:categoryId IS NULL OR category_id = :categoryId)
-          AND (:searchQuery IS NULL OR title LIKE '%' || :searchQuery || '%' OR merchant LIKE '%' || :searchQuery || '%')
+          AND (
+            :searchQuery IS NULL
+            OR title LIKE '%' || :searchQuery || '%'
+            OR merchant LIKE '%' || :searchQuery || '%'
+            OR note LIKE '%' || :searchQuery || '%'
+            OR (:exactAmountMinor IS NOT NULL AND amount_minor = :exactAmountMinor)
+            OR (
+              :amountDigitsPattern IS NOT NULL
+              AND CAST(amount_minor AS TEXT) LIKE '%' || :amountDigitsPattern || '%'
+            )
+          )
         ORDER BY expense_date DESC, created_at DESC
         """,
     )
@@ -100,5 +110,7 @@ interface ExpenseDao {
         endDate: LocalDate?,
         categoryId: Long?,
         searchQuery: String?,
+        exactAmountMinor: Long?,
+        amountDigitsPattern: String?,
     ): Flow<List<ExpenseEntity>>
 }

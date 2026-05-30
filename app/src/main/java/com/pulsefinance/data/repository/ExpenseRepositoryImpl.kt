@@ -6,6 +6,7 @@ import com.pulsefinance.data.mapper.toEntity
 import com.pulsefinance.domain.model.Expense
 import com.pulsefinance.domain.model.TransactionFilters
 import com.pulsefinance.domain.repository.ExpenseRepository
+import com.pulsefinance.domain.search.TransactionSearchMatcher
 import java.time.LocalDate
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -50,15 +51,19 @@ class ExpenseRepositoryImpl(
             .map { entities -> entities.map { it.toDomain() } }
             .flowOn(ioDispatcher)
 
-    override fun observeTransactions(filters: TransactionFilters): Flow<List<Expense>> =
-        expenseDao.observeFilteredExpenses(
+    override fun observeTransactions(filters: TransactionFilters): Flow<List<Expense>> {
+        val searchQuery = filters.searchQuery
+        return expenseDao.observeFilteredExpenses(
             startDate = filters.startDate,
             endDate = filters.endDate,
             categoryId = filters.categoryId,
-            searchQuery = filters.searchQuery,
+            searchQuery = searchQuery,
+            exactAmountMinor = searchQuery?.let(TransactionSearchMatcher::parseExactAmountMinor),
+            amountDigitsPattern = searchQuery?.let(TransactionSearchMatcher::amountDigitsPattern),
         )
             .map { entities -> entities.map { it.toDomain() } }
             .flowOn(ioDispatcher)
+    }
 
     override fun observeRecentExpenses(limit: Int): Flow<List<Expense>> =
         expenseDao.observeRecentExpenses(limit)

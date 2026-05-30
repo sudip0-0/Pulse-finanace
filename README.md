@@ -52,6 +52,38 @@ The app is not a generic budgeting clone. It is localized around:
 - Recurring Expenses
 - Settings
 
+## Run From Command Line
+
+Requirements:
+
+- Android Studio or Android SDK installed
+- JDK 17
+- Android SDK platform 36 installed
+- USB debugging enabled on the Android device
+- Device connected and authorized for ADB
+
+From the project root:
+
+```powershell
+adb devices
+.\gradlew.bat installDebug
+adb shell am start -n com.pulsefinance/.MainActivity
+```
+
+If the app does not open after an incremental install, do a clean reinstall:
+
+```powershell
+.\gradlew.bat clean installDebug
+adb shell am start -n com.pulsefinance/.MainActivity
+```
+
+Useful verification commands:
+
+```powershell
+adb shell pidof com.pulsefinance
+adb logcat -d -t 300 | Select-String -Pattern "com.pulsefinance|AndroidRuntime|FATAL EXCEPTION"
+```
+
 ## Current Implementation Status
 
 Phase 1 project foundation, Phase 2 local database, and Phase 3 domain layer are implemented:

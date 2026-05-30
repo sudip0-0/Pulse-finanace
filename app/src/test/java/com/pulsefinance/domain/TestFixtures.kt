@@ -10,6 +10,7 @@ import com.pulsefinance.domain.model.PaymentMethod
 import com.pulsefinance.domain.model.RecurringFrequency
 import com.pulsefinance.domain.model.RecurringRule
 import com.pulsefinance.domain.model.TransactionFilters
+import com.pulsefinance.domain.search.TransactionSearchMatcher
 import com.pulsefinance.domain.repository.BudgetRepository
 import com.pulsefinance.domain.repository.CategoryKeywordRepository
 import com.pulsefinance.domain.repository.CategoryRepository
@@ -167,8 +168,7 @@ internal class FakeExpenseRepository(
                 val beforeEnd = filters.endDate?.let { !expense.expenseDate.isAfter(it) } ?: true
                 val categoryMatches = filters.categoryId?.let { expense.categoryId == it } ?: true
                 val searchMatches = filters.searchQuery?.let { query ->
-                    listOf(expense.title, expense.merchant.orEmpty(), expense.note.orEmpty())
-                        .any { it.contains(query, ignoreCase = true) }
+                    TransactionSearchMatcher.matches(expense, query)
                 } ?: true
                 afterStart && beforeEnd && categoryMatches && searchMatches
             }
