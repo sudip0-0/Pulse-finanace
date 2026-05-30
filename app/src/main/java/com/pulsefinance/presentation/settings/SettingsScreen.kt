@@ -104,8 +104,8 @@ fun SettingsScreen(
         ) {
             // Profile block
             PulseCard {
-                Text(text = "Aayush Shrestha", style = MaterialTheme.typography.titleMedium)
-                Text(text = "aayush@pulse.local", color = PulseColors.TextSecondary)
+                Text(text = "Sudip Shrestha", style = MaterialTheme.typography.titleMedium)
+                Text(text = "Sudip@pulse.local", color = PulseColors.TextSecondary)
             }
 
             Spacer(modifier = Modifier.height(PulseSpacing.xs))

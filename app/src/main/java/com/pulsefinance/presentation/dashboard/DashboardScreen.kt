@@ -187,7 +187,7 @@ private fun DashboardHeader(onSearchClick: () -> Unit) {
                 .padding(start = PulseSpacing.md),
         ) {
             Text(text = "Welcome,", color = PulseColors.TextSecondary, style = MaterialTheme.typography.bodyLarge)
-            Text(text = "Aayush Shrestha", style = MaterialTheme.typography.titleLarge)
+            Text(text = "Sudip Shrestha", style = MaterialTheme.typography.titleLarge)
         }
         IconButton(onClick = onSearchClick) {
             Icon(imageVector = Icons.Default.Search, contentDescription = "Search")
