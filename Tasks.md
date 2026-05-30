@@ -152,6 +152,17 @@
 - [x] Add add-expense UI test
 - [ ] Run add-expense UI test on emulator/device
 
+## Phase 13 - Receipt Scan
+
+- [x] Add ML Kit on-device text recognition dependency
+- [x] Add camera and gallery permissions with FileProvider
+- [x] Implement `ReceiptTextParser` with Nepal receipt heuristics
+- [x] Implement `ParseReceiptFromTextUseCase` and `MlKitReceiptTextRecognizer`
+- [x] Build scan flow (capture, processing, review) with category suggestion
+- [x] Wire `ScanReceipt` navigation from Add Expense
+- [x] Add parser and ViewModel unit tests
+- [ ] Manual smoke test on device (camera + gallery + save)
+
 ## Phase 12 - Portfolio Polish
 
 - [ ] Add README screenshots

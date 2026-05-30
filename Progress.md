@@ -185,6 +185,13 @@ The project now has 156 unit tests covering all critical finance, categorization
   - Updated `ExportTransactionsCsvUseCaseTest.amountFormattedAsPlainNumberAndCurrencyColumnSeparate` to assert the corrected behaviour.
 - Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds (156 JVM unit tests) after the senior review pass
 - Verified `.\gradlew.bat :app:assembleDebug :app:assembleDebugAndroidTest` succeeds after the senior review pass
+- Implemented on-device receipt scan with ML Kit Text Recognition (Latin model)
+- Added `ReceiptTextParser` for Nepal-style totals, merchants, dates, and wallet keywords
+- Built `ScanReceiptScreen` flow: capture (camera/gallery) → OCR → review/edit → save via `AddExpenseUseCase`
+- Wired scan entry from Add Expense and `ScanReceipt` navigation route
+- Added receipt parser and `ScanReceiptViewModel` unit tests
+- Extended transaction search to match expense amounts (major units, decimals, formatted NPR)
+- Verified `.\gradlew.bat :app:testDebugUnitTest` succeeds after receipt scan and amount search
 
 ## In Progress
 

@@ -14,6 +14,7 @@ import com.pulsefinance.presentation.analytics.AnalyticsScreen
 import com.pulsefinance.presentation.common.components.PulseBottomBar
 import com.pulsefinance.presentation.dashboard.DashboardScreen
 import com.pulsefinance.presentation.expense.AddExpenseScreen
+import com.pulsefinance.presentation.receipt.ScanReceiptScreen
 import com.pulsefinance.presentation.recurring.AddRecurringRuleScreen
 import com.pulsefinance.presentation.recurring.RecurringScreen
 import com.pulsefinance.presentation.settings.CategoriesScreen
@@ -67,7 +68,13 @@ fun PulseNavGraph() {
                 )
             }
             composable(PulseRoute.AddExpense.path) {
-                AddExpenseScreen(onBack = { navController.popBackStack() })
+                AddExpenseScreen(
+                    onBack = { navController.popBackStack() },
+                    onScanReceipt = { navController.navigate(PulseRoute.ScanReceipt.path) },
+                )
+            }
+            composable(PulseRoute.ScanReceipt.path) {
+                ScanReceiptScreen(onBack = { navController.popBackStack() })
             }
             composable(
                 route = PulseRoute.AddExpensePrefilled.path,
@@ -82,7 +89,10 @@ fun PulseNavGraph() {
                     },
                 ),
             ) {
-                AddExpenseScreen(onBack = { navController.popBackStack() })
+                AddExpenseScreen(
+                    onBack = { navController.popBackStack() },
+                    onScanReceipt = { navController.navigate(PulseRoute.ScanReceipt.path) },
+                )
             }
             composable(
                 route = PulseRoute.EditExpense.path,

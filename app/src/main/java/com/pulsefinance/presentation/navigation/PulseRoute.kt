@@ -7,6 +7,7 @@ sealed class PulseRoute(val path: String) {
     data object Analytics : PulseRoute("analytics")
     data object Transactions : PulseRoute("transactions")
     data object AddExpense : PulseRoute("add_expense")
+    data object ScanReceipt : PulseRoute("scan_receipt")
     data object AddExpensePrefilled : PulseRoute("add_expense?merchant={merchant}&category={category}") {
         fun withPrefill(merchant: String?, category: String?): String {
             val merchantValue = Uri.encode(merchant.orEmpty())

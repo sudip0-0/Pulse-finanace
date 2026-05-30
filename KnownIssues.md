@@ -41,6 +41,20 @@ Potential resolution:
 
 - Add optional BS display mode after the core app is stable.
 
+## Receipt Scan Limitations
+
+Receipt scanning uses on-device ML Kit OCR (Latin script) plus heuristic parsing. It is not cloud AI.
+
+Impact:
+
+- Accuracy drops with poor lighting, crumpled receipts, handwriting, or Devanagari-only bills.
+- Multiple amounts on a receipt can confuse the parser; users must review before saving.
+- Receipt images are not stored in the database after processing.
+
+Reason:
+
+- Offline-first privacy and MVP scope. A review step is required by design.
+
 ## Auto-Categorization Is Rule-Based
 
 The MVP uses deterministic keyword and merchant rules.

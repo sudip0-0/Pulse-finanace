@@ -21,8 +21,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -64,6 +66,7 @@ import com.pulsefinance.presentation.common.theme.PulseSpacing
 @Composable
 fun AddExpenseScreen(
     onBack: () -> Unit,
+    onScanReceipt: () -> Unit = {},
     viewModel: AddExpenseViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -92,6 +95,21 @@ fun AddExpenseScreen(
             modifier = Modifier.padding(horizontal = PulseSpacing.xl),
             verticalArrangement = Arrangement.spacedBy(PulseSpacing.lg),
         ) {
+            if (!state.isEditing) {
+                OutlinedButton(
+                    onClick = onScanReceipt,
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.DocumentScanner,
+                        contentDescription = null,
+                        tint = PulseColors.Primary,
+                    )
+                    Spacer(modifier = Modifier.size(PulseSpacing.sm))
+                    Text("Scan receipt", color = PulseColors.Primary)
+                }
+            }
+
             // Amount input
             OutlinedTextField(
                 value = state.amountText,
